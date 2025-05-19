@@ -8,11 +8,11 @@
 - 📦 Progressive Web App — works offline and can be installed on devices
 - ☁️ Real-time data sync using Supabase
 - ⚡ Fast performance thanks to Vite
-- 🧠 Built with [Bolt](https://bolt.new/) for structure and speed
+- 🧠 Prototyped using [Bolt.new](https://bolt.new) — an AI tool for rapid app development
 
 ## 🛠️ Tech Stack
 
-- **Bolt** – for core logic and state management
+- **Bolt.new** – initial app structure and components generated using AI
 - **Vite** – as the frontend build tool
 - **PWA** – installable app experience with offline support
 - **Supabase** – backend-as-a-service (authentication + database)
