@@ -5,9 +5,9 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-    storage: window.sessionStorage, // Use sessionStorage instead of localStorage
+    autoRefreshToken: true,
+    persistSession: true,
+    storage: window.localStorage,
     detectSessionInUrl: true,
     flowType: 'pkce'
   }
@@ -15,28 +15,18 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Helper function to clear all auth data
 export const clearAuthData = () => {
-  // Clear all Supabase-related items from sessionStorage
-  Object.keys(sessionStorage).forEach(key => {
-    if (key.startsWith('sb-')) {
-      sessionStorage.removeItem(key);
-    }
-  });
-  
-  // Clear specific auth items
-  sessionStorage.removeItem('supabase.auth.token');
-  sessionStorage.removeItem('supabase.auth.expires_at');
-  sessionStorage.removeItem('supabase.auth.refresh_token');
-  
-  // Clear any localStorage items just in case
+  // Clear all Supabase-related items from localStorage
   Object.keys(localStorage).forEach(key => {
     if (key.startsWith('sb-')) {
       localStorage.removeItem(key);
     }
   });
+  
+  // Clear specific auth items
+  localStorage.removeItem('supabase.auth.token');
+  localStorage.removeItem('supabase.auth.expires_at');
+  localStorage.removeItem('supabase.auth.refresh_token');
 };
 
-// Add event listener for when the window is about to unload
-window.addEventListener('beforeunload', () => {
-  clearAuthData();
-  supabase.auth.signOut().catch(console.error);
-});
+// Remove the beforeunload listener to prevent automatic signout
+// This was causing issues with session persistence

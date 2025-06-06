@@ -207,6 +207,17 @@ function App() {
     }
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    const { error } = await supabase
+      .from('time_sessions')
+      .delete()
+      .eq('id', sessionId);
+
+    if (!error) {
+      setSessions(prev => prev.filter(session => session.id !== sessionId));
+    }
+  };
+
   const handleSignOut = async () => {
     try {
       // Clear all auth data first
@@ -388,6 +399,7 @@ function App() {
             sessions={sessions}
             tasks={tasks}
             projects={projects}
+            onDeleteSession={handleDeleteSession}
           />
         </div>
 
