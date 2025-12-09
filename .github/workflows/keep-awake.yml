@@ -2,30 +2,23 @@ name: Keep Supabase Awake
 
 on:
   schedule:
-    - cron: '*/5 * * * *'  # co 5 minut
+    - cron: '*/5 * * * *'
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Load .env
-        run: |
-          # wczytanie zmiennych z .env
-          export $(grep -v '^#' project/.env | xargs)
-
       - name: Ping Supabase tables
         run: |
+          SUPA_URL="https://aafmpzffodrspfvbmbkp.supabase.co"
+          SUPA_KEY="TWÓJ_PUBLICZNY_ANON_KEY"
+
           for table in tasks users projects; do
             echo "Pinging table: $table"
-            curl -X GET "$VITE_SUPABASE_URL/rest/v1/$table" \
-                 -H "apikey: $VITE_SUPABASE_ANON_KEY" \
-                 -H "Authorization: Bearer $VITE_SUPABASE_ANON_KEY" \
-                 -H "Accept: application/json"
+            curl -X GET "$SUPA_URL/rest/v1/$table" \
+                -H "apikey: $SUPA_KEY" \
+                -H "Authorization: Bearer $SUPA_KEY" \
+                -H "Accept: application/json"
             echo ""
           done
