@@ -26,6 +26,58 @@
 
 - `Node.js` / `npm` – dependency and script management
 
+## 🤖 Creating Prompts in `Bolt.new`
+
+`Bolt.new` allows rapid prototyping of UI components and app logic using AI-generated prompts. Here’s a quick guide to creating effective prompts:
+
+1. **Be specific** – clearly describe the component or feature you want.
+2. **Include context** – mention frameworks, libraries, or styling preferences.
+3. **Provide examples** – show the desired structure or behavior if possible.
+4. **Iterate** – refine your prompt based on the generated output.
+
+**Sample prompt**
+
+```yml
+Create a responsive task timer component in React + TypeScript,
+with start/stop buttons and a progress bar.
+Style it using Tailwind CSS.
+The component should display elapsed time in HH:MM:SS format.
+```
+
+### General Tips for AI Prompting
+
+- **Use plain language first, then add technical details**  
+  Start with a simple, natural description of what you want, then layer in frameworks, languages, or constraints. This helps the AI understand your intent clearly.
+
+- **Experiment with different phrasings**  
+  Slightly changing how you word a prompt can produce different outputs. Don’t hesitate to reword or restructure sentences for clarity or creativity.
+
+- **Combine multiple instructions carefully**  
+  You can include several requirements in one prompt, but keep it readable and organized. Use line breaks, bullet points, or numbered lists if the AI supports it.
+
+- **Specify the audience or user**  
+  Mention the target users or context, e.g., “Design this for mobile users” or “Make this suitable for beginners.” This ensures the output is tailored appropriately.
+
+- **Include constraints and rules explicitly**  
+  If there are limitations (design style, length, format, accessibility requirements), state them clearly to avoid undesired outputs.
+
+- **Ask for step-by-step reasoning for complex tasks**  
+  For multi-step problems or explanations, request that the AI think step by step. Example: “Explain your approach before giving the final code.”
+
+- **Provide examples whenever possible**  
+  Demonstrate desired outputs with sample code snippets, UI layouts, or text formats to guide the AI toward your expectations.
+- **Iterate and refine**  
+  Don’t expect perfection on the first try. Review outputs, adjust the prompt, and iterate until you get satisfactory results.
+
+- **Use explicit roles or personas**  
+  For creative tasks, you can assign the AI a role: “You are a UX designer” or “You are an expert in React development.” This often improves relevance and style.
+
+- **Keep prompts concise yet complete**  
+  Avoid overly long prompts with unnecessary details, but ensure all key requirements are included.
+
+
+### Example prompt for TickTrack
+
 ## 📦 Installation
 
 1. Clone the repository:
