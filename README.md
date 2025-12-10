@@ -26,6 +26,8 @@
 
 - `Node.js` / `npm` – dependency and script management
 
+- `Cloudflare` – domain management with DNS, SSL and performance optimizations
+
 ## 🤖 Creating Prompts in `Bolt.new`
 
 `Bolt.new` allows rapid prototyping of UI components and app logic using AI-generated prompts. Here’s a quick guide to creating effective prompts:
@@ -76,7 +78,9 @@ The component should display elapsed time in HH:MM:SS format.
   Avoid overly long prompts with unnecessary details, but ensure all key requirements are included.
 
 
-### Example prompt for TickTrack
+## 🏡 Hosting
+
+The project’s domain is managed through Cloudflare, which provides fast DNS routing, automatic SSL certificates, and essential security features. While the application itself is hosted elsewhere (locally during development), Cloudflare ensures stable, secure, and globally optimized access to the domain. This setup allows the frontend to load reliably and benefit from Cloudflare’s performance enhancements without requiring full Cloudflare hosting.
 
 ## 📦 Installation
 
