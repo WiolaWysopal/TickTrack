@@ -156,6 +156,10 @@ jobs:
 
 2. You can view the run history in `GitHub → Actions → Keep Supabase Awake`.
 
+## 🖼️ Favicon
+
+The application’s avatar (favicon) was generated using `Craion`, an AI-powered tool that creates images based on short text prompts. Craion uses generative models to produce graphics in various styles, making it easy to generate simple illustrations, icons, or visual concepts. The image used in this project was created specifically for the application and does not depict any real persons or objects.
+
 ## 🌐 Live Demo
 
 The **TickTrack** app is deployed and available online at:
