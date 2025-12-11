@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Task } from '../types';
-import PdfUpload from './PdfUpload';
+import PdfUpload from './PdfUpload'; // importujemy komponent
 
 interface TaskListProps {
   tasks: Task[];
@@ -30,6 +30,7 @@ export function TaskList({ tasks, selectedProjectId, selectedTaskId, onAddTask, 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold mb-4">Tasks</h2>
+      
       {selectedProjectId ? (
         <form onSubmit={handleSubmit} className="mb-4">
           <div className="flex gap-2">
@@ -51,7 +52,8 @@ export function TaskList({ tasks, selectedProjectId, selectedTaskId, onAddTask, 
       ) : (
         <p className="text-gray-500 mb-4">Select a project to add tasks</p>
       )}
-      <ul className="space-y-2">
+
+      <ul className="space-y-2 mb-4">
         {filteredTasks.map((task) => (
           <li
             key={task.id}
@@ -77,7 +79,12 @@ export function TaskList({ tasks, selectedProjectId, selectedTaskId, onAddTask, 
         ))}
       </ul>
 
-      
+      {/* Tu dodajemy komponent upload PDF tylko dla wybranego taska */}
+      {/* {selectedTaskId && (
+        <div className="mt-4">
+          <PdfUpload taskId={selectedTaskId} />
+        </div>
+      )} */}
     </div>
   );
 }
