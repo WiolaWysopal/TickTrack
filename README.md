@@ -14,6 +14,8 @@
 
 - 🧠 Prototyped using [Bolt.new](https://bolt.new) - an AI tool for rapid app development
 
+- 📁 Uploading files to tasks using Supabase Bucket (`Supabase Storage`)
+
 ## 🛠️ Tech Stack
 
 - `Bolt.new` – initial app structure and components generated using AI
@@ -81,6 +83,10 @@ The component should display elapsed time in HH:MM:SS format.
 ## 🏡 Hosting
 
 The project’s domain is managed through Cloudflare, which provides fast DNS routing, automatic SSL certificates, and essential security features. While the application itself is hosted elsewhere (locally during development), Cloudflare ensures stable, secure, and globally optimized access to the domain. This setup allows the frontend to load reliably and benefit from Cloudflare’s performance enhancements without requiring full Cloudflare hosting.
+
+## 📁Uploading files
+
+### [`SOON`]
 
 ## 📦 Installation
 
