@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Task } from '../types';
+import PdfUpload from './PdfUpload';
 
 interface TaskListProps {
   tasks: Task[];
@@ -75,6 +76,8 @@ export function TaskList({ tasks, selectedProjectId, selectedTaskId, onAddTask, 
           </li>
         ))}
       </ul>
+
+      
     </div>
   );
 }
