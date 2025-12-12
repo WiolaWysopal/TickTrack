@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Task } from '../types';
 import PdfUpload from './PdfUpload'; // importujemy komponent
+import TaskFilesList from './TaskFilesList';
 
 interface TaskListProps {
   tasks: Task[];
@@ -81,10 +82,17 @@ export function TaskList({ tasks, selectedProjectId, selectedTaskId, onAddTask, 
 
       {/* Tu dodajemy komponent upload PDF tylko dla wybranego taska */}
       {/* {selectedTaskId && (
-        <div className="mt-4">
-          <PdfUpload taskId={selectedTaskId} />
-        </div>
-      )} */}
+  <div className="mt-4">
+    <PdfUpload
+      taskId={selectedTaskId}
+      onUploadSuccess={() => {
+        // opcjonalnie: odśwież listę plików po uploadzie
+      }}
+    />
+    <TaskFilesList taskId={selectedTaskId} />
+  </div>
+)} */}
+
     </div>
   );
 }
