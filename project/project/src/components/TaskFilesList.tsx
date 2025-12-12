@@ -17,24 +17,32 @@ const TaskFilesList: React.FC<TaskFilesListProps> = ({ taskId }) => {
   const [loading, setLoading] = useState(false);
 
   const fetchFiles = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from<FileItem>("task_files")
-        .select("*")
-        .eq("task_id", taskId)
-        .order("created_at", { ascending: false });
+  setLoading(true);
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error(error);
-        return;
-      }
+    if (!user) return;
 
-      setFiles(data || []);
-    } finally {
-      setLoading(false);
+    const { data, error } = await supabase
+      .from<FileItem>("task_files")
+      .select("*")
+      .eq("task_id", taskId)   // filtr po task_id
+      .eq("user_id", user.id)  // filtr po aktualnym użytkowniku
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
     }
-  };
+
+    setFiles(data || []);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchFiles();
