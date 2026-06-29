@@ -2,19 +2,46 @@
 
 **TickTrack** is a lightweight and modern Progressive Web App (`PWA`) designed to help users track time and manage tasks efficiently.
 
+## 💡 Why TickTrack?
+
+TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking and document storage inside a modern Progressive Web App powered by Supabase.
+
+The application demonstrates practical usage of React, TypeScript, Supabase Authentication, PostgreSQL, Storage, Row Level Security (RLS) and Progressive Web App technologies.
+
 ## 🚀 Features
 
-- ⏱️ Task timer with a clean and responsive interface
+### Task Management
 
-- 📦 Progressive Web App - works offline and can be installed on devices
+- ✅ Create, edit and delete tasks
+- 📂 Organize tasks into projects
+- ⭐ Mark tasks as favorites
+- 🔍 Search and filter tasks
+- 📅 Sort tasks by date
 
-- ☁️ Real-time data sync using Supabase
+### Time Tracking
 
-- ⚡ Fast performance thanks to Vite
+- ⏱️ Built-in task timer
+- ▶️ Start / pause / stop tracking
+- 📊 Automatic time calculation
 
-- 🧠 Prototyped using [Bolt.new](https://bolt.new) - an AI tool for rapid app development
+### File Management
 
-- 📁 Uploading files to tasks using Supabase Bucket (`Supabase Storage`)
+- 📄 Upload PDF files directly to tasks
+- 📥 Download uploaded files
+- 🗑️ Delete attached files
+- 🔒 Private storage per authenticated user
+- ☁️ Files stored in Supabase Storage
+
+### Authentication
+
+- 🔐 Email authentication with Supabase
+- 👤 User-specific projects and tasks
+
+### Progressive Web App
+
+- 📦 Installable
+- 📱 Mobile-friendly
+- 🌙 Offline support
 
 ## 🛠️ Tech Stack
 
@@ -79,14 +106,140 @@ The component should display elapsed time in HH:MM:SS format.
 - **Keep prompts concise yet complete**  
   Avoid overly long prompts with unnecessary details, but ensure all key requirements are included.
 
+## 🏗️ Architecture
+
+TickTrack follows a client-first architecture powered by Supabase services.
+
+```
+┌────────────────────┐
+│   React + Vite     │
+│     Frontend       │
+└─────────┬──────────┘
+          │
+          ▼
+┌────────────────────┐
+│     Supabase       │
+├────────────────────┤
+│ Authentication     │
+│ PostgreSQL         │
+│ Storage            │
+│ Row Level Security │
+└────────────────────┘
+```
+
+The frontend communicates directly with Supabase using the official JavaScript SDK. User authentication, database operations and file uploads are secured using Row Level Security (RLS) policies.
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   ├── PdfUpload.tsx
+│   ├── TaskFilesList.tsx
+│   ├── Timer.tsx
+│   └── ...
+│
+├── pages/
+├── hooks/
+├── lib/
+│   └── supabase.ts
+├── utils/
+├── types/
+└── assets/
+```
+
+The application is organized into reusable React components with Supabase configuration separated inside the `lib` directory.
+
+## 🧩 Main Components
+
+### PdfUpload
+
+Responsible for:
+
+- selecting PDF files
+- validating uploaded files
+- uploading files to Supabase Storage
+- displaying upload status
+
+### TaskFilesList
+
+Responsible for:
+
+- fetching uploaded files
+- displaying task attachments
+- downloading files
+- deleting uploaded documents
+
+### Timer
+
+Responsible for:
+
+- tracking task duration
+- start, pause and stop functionality
+- displaying elapsed time
 
 ## 🏡 Hosting
 
 The project’s domain is managed through Cloudflare, which provides fast DNS routing, automatic SSL certificates, and essential security features. While the application itself is hosted elsewhere (locally during development), Cloudflare ensures stable, secure, and globally optimized access to the domain. This setup allows the frontend to load reliably and benefit from Cloudflare’s performance enhancements without requiring full Cloudflare hosting.
 
-## 📁Uploading files
+## 📄 Task Attachments
 
-### [`SOON`]
+TickTrack allows authenticated users to upload PDF documents directly to individual tasks.
+
+### Features
+
+- upload PDF files
+- automatic validation (PDF only)
+- download attachments
+- delete attachments
+- private storage using Supabase Storage
+- metadata stored in Supabase Database
+
+### Storage structure
+
+```
+task-files/
+    user-id/
+        task-id/
+            file.pdf
+```
+
+## 🔒 Security
+
+TickTrack protects user data using several Supabase security features:
+
+- Supabase Authentication
+- Row Level Security (RLS)
+- protected Storage buckets
+- authenticated file uploads
+- ownership validation
+- PDF MIME type validation
+- user-specific task isolation
+
+## 🧹 Code Quality
+
+The project follows modern React and TypeScript best practices.
+
+Implemented improvements include:
+
+- strict TypeScript type checking
+- ESLint integration
+- React Hooks dependency validation
+- reusable React components
+- asynchronous error handling
+- file upload validation
+- strongly typed Supabase responses
+
+These improvements increase maintainability, readability and long-term scalability of the application.
+
+## 📋 Requirements
+
+Before running the project locally, make sure you have:
+
+- Node.js 20+
+- npm 10+
+- a Supabase project
+- Supabase Storage bucket named `task-files`
 
 ## 📦 Installation
 
@@ -109,6 +262,18 @@ npm install
 npm run dev
 ```
 
+4. Create the environment variables:
+
+```bash
+cp .env.example .env.public
+```
+
+or manually create:
+
+```text
+.env.public
+```
+
 ## 🧪 Available Scripts
 
 - `npm run dev` – start the development server
@@ -129,6 +294,19 @@ Create a `.env.public` file in your project/ directory:
 VITE_SUPABASE_URL="https://YOUR-PROJECT.supabase.co"
 VITE_SUPABASE_ANON_KEY="YOUR_PUBLIC_ANON_KEY"
 ```
+
+## 🗄️ Database
+
+TickTrack stores application data inside Supabase PostgreSQL.
+
+Main tables:
+
+- users
+- projects
+- tasks
+- task_files
+
+Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
 
 ## 🕒 Keeping Supabase Awake (CRON)
 
@@ -169,6 +347,19 @@ jobs:
 ## 🖼️ Favicon
 
 The application’s avatar (favicon) was generated using `Craion`, an AI-powered tool that creates images based on short text prompts. Craion uses generative models to produce graphics in various styles, making it easy to generate simple illustrations, icons, or visual concepts. The image used in this project was created specifically for the application and does not depict any real persons or objects.
+
+## 🚧 Future Improvements
+
+Planned features include:
+
+- image attachments
+- drag & drop uploads
+- task comments
+- recurring tasks
+- calendar integration
+- export to PDF
+- dark mode improvements
+- team collaboration
 
 ## 🌐 Live Demo
 
