@@ -9,19 +9,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     storage: window.localStorage,
     detectSessionInUrl: true,
-    flowType: 'pkce'
-  }
+    flowType: 'pkce',
+  },
 });
 
 // Helper function to clear all auth data
 export const clearAuthData = () => {
   // Clear all Supabase-related items from localStorage
-  Object.keys(localStorage).forEach(key => {
+  Object.keys(localStorage).forEach((key) => {
     if (key.startsWith('sb-')) {
       localStorage.removeItem(key);
     }
   });
-  
+
   // Clear specific auth items
   localStorage.removeItem('supabase.auth.token');
   localStorage.removeItem('supabase.auth.expires_at');

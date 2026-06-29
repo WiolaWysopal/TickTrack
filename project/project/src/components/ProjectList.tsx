@@ -9,7 +9,13 @@ interface ProjectListProps {
   selectedProjectId: string | null;
 }
 
-export function ProjectList({ projects, onAddProject, onSelectProject, onDeleteProject, selectedProjectId }: ProjectListProps) {
+export function ProjectList({
+  projects,
+  onAddProject,
+  onSelectProject,
+  onDeleteProject,
+  selectedProjectId,
+}: ProjectListProps) {
   const [newProjectName, setNewProjectName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

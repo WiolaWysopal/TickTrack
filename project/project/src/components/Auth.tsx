@@ -22,7 +22,7 @@ export function Auth() {
         email,
         password,
       });
-      
+
       if (signInError) throw signInError;
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred');
@@ -33,12 +33,12 @@ export function Auth() {
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isResetMode && !email) {
-      setError("Please enter your email address");
+      setError('Please enter your email address');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -47,13 +47,12 @@ export function Auth() {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
-      
+
       if (resetError) {
         throw resetError;
       }
-      
-      setSuccess("Password reset link has been sent to your email. Please check your inbox.");
-      
+
+      setSuccess('Password reset link has been sent to your email. Please check your inbox.');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred during password reset');
     } finally {
@@ -63,12 +62,12 @@ export function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -79,17 +78,17 @@ export function Auth() {
         password,
         options: {
           emailRedirectTo: window.location.origin,
-        }
+        },
       });
-      
+
       if (error) throw error;
-      
+
       if (data.user?.identities?.length === 0) {
-        setError("This email is already registered. Please try signing in or reset your password.");
+        setError('This email is already registered. Please try signing in or reset your password.');
         return;
       }
-      
-      setSuccess("Account created successfully! You can now sign in.");
+
+      setSuccess('Account created successfully! You can now sign in.');
       setIsSignUpMode(false);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred');
@@ -112,14 +111,14 @@ export function Auth() {
       <div className="flex-grow flex items-center justify-center">
         <div className="max-w-md w-full space-y-8 auth-container bg-white p-8 rounded-lg shadow-md">
           <div>
-            <h1 className="text-center text-4xl font-bold text-gray-900 mb-2">
-              TickTrack
-            </h1>
-            <p className="text-center text-lg text-gray-600 mb-8">
-              Your time tracking companion
-            </p>
+            <h1 className="text-center text-4xl font-bold text-gray-900 mb-2">TickTrack</h1>
+            <p className="text-center text-lg text-gray-600 mb-8">Your time tracking companion</p>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              {isResetMode ? 'Reset Your Password' : isSignUpMode ? 'Create an Account' : 'Sign in to your account'}
+              {isResetMode
+                ? 'Reset Your Password'
+                : isSignUpMode
+                  ? 'Create an Account'
+                  : 'Sign in to your account'}
             </h2>
             {isResetMode && (
               <p className="mt-2 text-center text-sm text-gray-600">
@@ -171,7 +170,7 @@ export function Auth() {
                 >
                   {loading ? 'Processing...' : 'Send Reset Link'}
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={resetForm}
@@ -200,7 +199,10 @@ export function Auth() {
               </div>
 
               <div>
-                <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="signup-password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <input
@@ -217,7 +219,10 @@ export function Auth() {
               </div>
 
               <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="confirm-password"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -241,7 +246,7 @@ export function Auth() {
                 >
                   {loading ? 'Creating account...' : 'Create Account'}
                 </button>
-                
+
                 <button
                   type="button"
                   onClick={resetForm}
@@ -294,7 +299,7 @@ export function Auth() {
                 >
                   {loading ? 'Signing in...' : 'Sign in'}
                 </button>
-                
+
                 <div className="flex justify-between">
                   <button
                     type="button"
@@ -310,7 +315,7 @@ export function Auth() {
                   >
                     Forgot password?
                   </button>
-                  
+
                   <button
                     type="button"
                     onClick={() => {

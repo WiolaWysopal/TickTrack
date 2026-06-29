@@ -1,4 +1,4 @@
-import { registerSW } from 'virtual:pwa-register'
+import { registerSW } from 'virtual:pwa-register';
 
 // Only register service worker in production
 export function registerServiceWorker() {
@@ -13,41 +13,42 @@ export function registerServiceWorker() {
       immediate: true,
       onNeedRefresh() {
         if (confirm('New content available. Reload?')) {
-          updateSW(true)
+          updateSW(true);
         }
       },
       onOfflineReady() {
         const event = new CustomEvent('pwa-ready');
         window.dispatchEvent(event);
-        console.log('App ready to work offline')
+        console.log('App ready to work offline');
       },
       onRegistered(registration) {
         if (registration) {
-          setInterval(() => {
-            registration.update()
-          }, 60 * 60 * 1000) // Check for updates every hour
+          setInterval(
+            () => {
+              registration.update();
+            },
+            60 * 60 * 1000
+          ); // Check for updates every hour
         }
-        console.log('SW registered:', registration)
+        console.log('SW registered:', registration);
       },
       onRegisterError(error) {
-        console.error('SW registration error:', error)
-      }
-    })
+        console.error('SW registration error:', error);
+      },
+    });
   }
 }
 
 // Only add install prompt listener in production
 if (!import.meta.env.DEV) {
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault()
-    // @ts-ignore - Custom property for PWA install prompt
-    window.deferredPrompt = e
-  })
+    e.preventDefault();
+    window.deferredPrompt = e;
+  });
 }
 
 // Handle successful installation
 window.addEventListener('appinstalled', () => {
-  // @ts-ignore - Custom property for PWA install prompt
-  window.deferredPrompt = null
-  console.log('PWA installed successfully')
-})
+  window.deferredPrompt = null;
+  console.log('PWA installed successfully');
+});

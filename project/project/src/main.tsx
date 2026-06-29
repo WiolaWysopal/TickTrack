@@ -1,14 +1,14 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './index.css'
-import App from './App.tsx'
-import { PasswordReset } from './components/PasswordReset.tsx'
-import { AdSenseVerification } from './components/AdSenseVerification.tsx'
-import { registerServiceWorker } from './registerSW'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './index.css';
+import App from './App.tsx';
+import { PasswordReset } from './components/PasswordReset.tsx';
+import { AdSenseVerification } from './components/AdSenseVerification.tsx';
+import { registerServiceWorker } from './registerSW';
 
 // Register service worker
-registerServiceWorker()
+registerServiceWorker();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -19,5 +19,5 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/adsense-verification" element={<AdSenseVerification />} />
       </Routes>
     </BrowserRouter>
-  </StrictMode>,
-)
+  </StrictMode>
+);

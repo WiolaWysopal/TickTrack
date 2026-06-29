@@ -12,7 +12,7 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
   const [isPaused, setIsPaused] = useState(false);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [pausedTime, setPausedTime] = useState(0);
+  const [, setPausedTime] = useState(0);
   const [lastPauseTime, setLastPauseTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
     if (lastPauseTime) {
       const now = new Date();
       const pauseDuration = Math.floor((now.getTime() - lastPauseTime.getTime()) / 1000);
-      setPausedTime(prev => prev + pauseDuration);
+      setPausedTime((prev) => prev + pauseDuration);
     }
   };
 
@@ -76,11 +76,13 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
   };
 
   return (
-    <div className={`fixed md:relative bg-white p-6 rounded-lg shadow-md transition-all duration-300 ease-in-out z-50 ${
-      isRunning 
-        ? 'bottom-0 left-0 right-0 md:bottom-auto' 
-        : 'bottom-0 left-0 right-0 md:bottom-auto'
-    }`}>
+    <div
+      className={`fixed md:relative bg-white p-6 rounded-lg shadow-md transition-all duration-300 ease-in-out z-50 ${
+        isRunning
+          ? 'bottom-0 left-0 right-0 md:bottom-auto'
+          : 'bottom-0 left-0 right-0 md:bottom-auto'
+      }`}
+    >
       <div className="mb-4">
         <h2 className="text-xl font-semibold text-gray-900">{projectName}</h2>
         <p className="text-gray-600">{taskName}</p>
@@ -124,9 +126,7 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
           </>
         )}
       </div>
-      {isPaused && (
-        <p className="text-yellow-600 text-sm mt-2 text-center">Timer paused</p>
-      )}
+      {isPaused && <p className="text-yellow-600 text-sm mt-2 text-center">Timer paused</p>}
     </div>
   );
 }

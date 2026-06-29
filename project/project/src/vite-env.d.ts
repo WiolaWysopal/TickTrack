@@ -2,5 +2,6 @@
 /// <reference types="vite-plugin-pwa/client" />
 
 interface Window {
-  deferredPrompt?: any;
+  adsbygoogle?: unknown[];
+  deferredPrompt?: Event | null;
 }

@@ -13,52 +13,51 @@ export function PasswordReset() {
 
   useEffect(() => {
     const code = searchParams.get('code');
-    
+
     if (code) {
       // If we have a code, set the session
       supabase.auth.exchangeCodeForSession(code).catch((error) => {
         console.error('Error exchanging code for session:', error);
-        setError("Invalid or expired reset link. Please request a new password reset.");
+        setError('Invalid or expired reset link. Please request a new password reset.');
       });
     }
   }, [searchParams]);
 
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setError("Passwords don't match");
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
+      setError('Password must be at least 6 characters long');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password: password,
       });
-      
+
       if (error) {
         throw error;
       }
-      
-      setSuccess("Password has been reset successfully. You will be redirected to login.");
-      
+
+      setSuccess('Password has been reset successfully. You will be redirected to login.');
+
       // Sign out the user after successful password reset
       await supabase.auth.signOut();
-      
+
       // Redirect to login page after 3 seconds
       setTimeout(() => {
         navigate('/', { replace: true });
       }, 3000);
-      
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred during password reset');
     } finally {
@@ -73,9 +72,7 @@ export function PasswordReset() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Reset Your Password
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your new password below
-          </p>
+          <p className="mt-2 text-center text-sm text-gray-600">Enter your new password below</p>
         </div>
 
         {error && (
@@ -133,7 +130,7 @@ export function PasswordReset() {
             >
               {loading ? 'Processing...' : 'Reset Password'}
             </button>
-            
+
             <button
               type="button"
               onClick={() => navigate('/')}
