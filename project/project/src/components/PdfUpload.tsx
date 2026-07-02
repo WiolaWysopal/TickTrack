@@ -6,11 +6,30 @@ interface PdfUploadProps {
   onUploadSuccess?: () => void;
 }
 
+const MAX_FILE_SIZE_MB = 10;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+const sanitizeFileName = (fileName: string) => {
+  return fileName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .replace(/_+/g, '_');
+};
+
 const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const clearSelectedFile = () => {
+    setFile(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -18,8 +37,14 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
     if (!selectedFile) return;
 
     if (selectedFile.type !== 'application/pdf') {
-      setFile(null);
+      clearSelectedFile();
       setMessage('Please select a PDF file.');
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
+      clearSelectedFile();
+      setMessage(`File is too large. Maximum allowed size is ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
 
@@ -28,6 +53,8 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
   };
 
   const handleUpload = async () => {
+    if (uploading) return;
+
     if (!file) {
       setMessage('No file selected.');
       return;
@@ -47,7 +74,8 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         return;
       }
 
-      const filePath = `${user.id}/${taskId}/${Date.now()}_${file.name}`;
+      const safeFileName = sanitizeFileName(file.name);
+      const filePath = `${user.id}/${taskId}/${Date.now()}_${safeFileName}`;
 
       const { data: storageData, error: storageError } = await supabase.storage
         .from('task-files')
@@ -73,12 +101,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
       }
 
       setMessage('File uploaded successfully.');
-      setFile(null);
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-
+      clearSelectedFile();
       onUploadSuccess?.();
     } catch (error) {
       console.error(error);
@@ -90,12 +113,15 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
 
   return (
     <div className="rounded-md border p-4 shadow-sm">
-      <h3 className="mb-3 text-lg font-semibold">Tell us what you have been working on!</h3>
+      <h3 className="mb-1 text-lg font-semibold">Upload task PDF</h3>
+      <p className="mb-3 text-xs text-gray-500">
+        Accepted format: PDF. Maximum size: {MAX_FILE_SIZE_MB} MB.
+      </p>
 
       <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
         <input
           ref={fileInputRef}
-          id="pdf-upload"
+          id={`pdf-upload-${taskId}`}
           type="file"
           accept="application/pdf"
           onChange={handleFileChange}
@@ -103,7 +129,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         />
 
         <label
-          htmlFor="pdf-upload"
+          htmlFor={`pdf-upload-${taskId}`}
           className="cursor-pointer rounded-md bg-gray-200 px-4 py-2 hover:bg-gray-300"
         >
           Choose PDF
@@ -122,7 +148,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         <button
           type="button"
           onClick={handleUpload}
-          disabled={uploading}
+          disabled={uploading || !file}
           className="shrink-0 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400"
         >
           {uploading ? 'Uploading...' : 'Upload PDF'}
