@@ -21,6 +21,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const clearSelectedFile = () => {
@@ -31,6 +32,21 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
     }
   };
 
+  const setError = (text: string) => {
+    setMessage(text);
+    setMessageType('error');
+  };
+
+  const setSuccess = (text: string) => {
+    setMessage(text);
+    setMessageType('success');
+  };
+
+  const clearMessage = () => {
+    setMessage('');
+    setMessageType(null);
+  };
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
 
@@ -38,30 +54,30 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
 
     if (selectedFile.type !== 'application/pdf') {
       clearSelectedFile();
-      setMessage('Please select a PDF file.');
+      setError('Please select a PDF file.');
       return;
     }
 
     if (selectedFile.size > MAX_FILE_SIZE_BYTES) {
       clearSelectedFile();
-      setMessage(`File is too large. Maximum allowed size is ${MAX_FILE_SIZE_MB} MB.`);
+      setError(`File is too large. Maximum allowed size is ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
 
     setFile(selectedFile);
-    setMessage('');
+    clearMessage();
   };
 
   const handleUpload = async () => {
     if (uploading) return;
 
     if (!file) {
-      setMessage('No file selected.');
+      setError('No file selected.');
       return;
     }
 
     setUploading(true);
-    setMessage('');
+    clearMessage();
 
     try {
       const {
@@ -70,7 +86,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
       } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        setMessage('You must be signed in to upload a file.');
+        setError('You must be signed in to upload a file.');
         return;
       }
 
@@ -82,7 +98,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         .upload(filePath, file);
 
       if (storageError) {
-        setMessage(`Upload failed: ${storageError.message}`);
+        setError(`Upload failed: ${storageError.message}`);
         return;
       }
 
@@ -96,16 +112,16 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
       ]);
 
       if (dbError) {
-        setMessage(`Database save failed: ${dbError.message}`);
+        setError(`Database save failed: ${dbError.message}`);
         return;
       }
 
-      setMessage('File uploaded successfully.');
+      setSuccess('File uploaded successfully.');
       clearSelectedFile();
       onUploadSuccess?.();
     } catch (error) {
       console.error(error);
-      setMessage('An unexpected error occurred.');
+      setError('An unexpected error occurred.');
     } finally {
       setUploading(false);
     }
@@ -155,7 +171,13 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         </button>
       </div>
 
-      {message && <p className="mt-2 text-sm text-gray-600">{message}</p>}
+      {message && (
+        <p
+          className={`mt-2 text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 };
