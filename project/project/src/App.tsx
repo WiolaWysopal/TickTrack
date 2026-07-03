@@ -147,11 +147,15 @@ function App() {
     projectId,
     status,
     priority,
+    description,
+    dueDate,
   }: {
     name: string;
     projectId: string;
     status: string;
     priority: string;
+    description: string | null;
+    dueDate: string | null;
   }) => {
     if (!user) return;
 
@@ -161,6 +165,8 @@ function App() {
       user_id: user.id,
       status,
       priority,
+      description,
+      due_date: dueDate,
     };
 
     const { data, error } = await supabase.from('tasks').insert([newTask]).select().single();
