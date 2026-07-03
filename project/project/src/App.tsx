@@ -309,6 +309,25 @@ function App() {
     }
   };
 
+  const handleUpdateTask = async (
+    taskId: string,
+    updates: {
+      status?: string;
+      priority?: string;
+    }
+  ) => {
+    const { data, error } = await supabase
+      .from('tasks')
+      .update(updates)
+      .eq('id', taskId)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
+    }
+  };
+
   const resetDeleteAccountStates = () => {
     setShowDeleteConfirm(false);
     setShowPasswordInput(false);
@@ -384,6 +403,7 @@ function App() {
             onSelectTask={setSelectedTaskId}
             onDeleteTask={handleDeleteTask}
             selectedTaskId={selectedTaskId}
+            onUpdateTask={handleUpdateTask}
           />
         </div>
 

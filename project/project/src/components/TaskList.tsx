@@ -10,6 +10,13 @@ interface TaskListProps {
   onAddTask: (task: { name: string; projectId: string; status: string; priority: string }) => void;
   onSelectTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
+  onUpdateTask: (
+    taskId: string,
+    updates: {
+      status?: string;
+      priority?: string;
+    }
+  ) => void;
 }
 
 export function TaskList({
@@ -19,6 +26,7 @@ export function TaskList({
   onAddTask,
   onSelectTask,
   onDeleteTask,
+  onUpdateTask,
 }: TaskListProps) {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('todo');
@@ -37,6 +45,8 @@ export function TaskList({
       });
 
       setNewTaskName('');
+      setNewTaskStatus('todo');
+      setNewTaskPriority('medium');
     }
   };
 
@@ -103,9 +113,25 @@ export function TaskList({
               </span>
 
               <div className="mt-2 flex gap-2 text-xs">
-                <span className="rounded bg-gray-100 px-2 py-1">{task.status}</span>
+                <select
+                  value={task.status}
+                  onChange={(e) => onUpdateTask(task.id, { status: e.target.value })}
+                  className="rounded bg-gray-100 px-2 py-1"
+                >
+                  <option value="todo">To Do</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="done">Done</option>
+                </select>
 
-                <span className="rounded bg-gray-100 px-2 py-1">{task.priority}</span>
+                <select
+                  value={task.priority}
+                  onChange={(e) => onUpdateTask(task.id, { priority: e.target.value })}
+                  className="rounded bg-gray-100 px-2 py-1"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
               </div>
 
               <button
