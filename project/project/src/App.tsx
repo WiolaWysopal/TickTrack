@@ -142,13 +142,25 @@ function App() {
     }
   };
 
-  const handleAddTask = async ({ name, projectId }: { name: string; projectId: string }) => {
+  const handleAddTask = async ({
+    name,
+    projectId,
+    status,
+    priority,
+  }: {
+    name: string;
+    projectId: string;
+    status: string;
+    priority: string;
+  }) => {
     if (!user) return;
 
     const newTask = {
       name,
       project_id: projectId,
       user_id: user.id,
+      status,
+      priority,
     };
 
     const { data, error } = await supabase.from('tasks').insert([newTask]).select().single();
@@ -297,6 +309,25 @@ function App() {
     }
   };
 
+  const handleUpdateTask = async (
+    taskId: string,
+    updates: {
+      status?: string;
+      priority?: string;
+    }
+  ) => {
+    const { data, error } = await supabase
+      .from('tasks')
+      .update(updates)
+      .eq('id', taskId)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
+    }
+  };
+
   const resetDeleteAccountStates = () => {
     setShowDeleteConfirm(false);
     setShowPasswordInput(false);
@@ -372,6 +403,7 @@ function App() {
             onSelectTask={setSelectedTaskId}
             onDeleteTask={handleDeleteTask}
             selectedTaskId={selectedTaskId}
+            onUpdateTask={handleUpdateTask}
           />
         </div>
 
