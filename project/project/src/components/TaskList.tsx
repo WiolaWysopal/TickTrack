@@ -9,7 +9,14 @@ interface TaskListProps {
   tasks: Task[];
   selectedProjectId: string | null;
   selectedTaskId: string | null;
-  onAddTask: (task: { name: string; projectId: string; status: string; priority: string }) => void;
+  onAddTask: (task: {
+    name: string;
+    projectId: string;
+    status: string;
+    priority: string;
+    description: string | null;
+    dueDate: string | null;
+  }) => void;
   onSelectTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
   onUpdateTask: (
@@ -33,6 +40,8 @@ export function TaskList({
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('todo');
   const [newTaskPriority, setNewTaskPriority] = useState('medium');
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [newTaskDueDate, setNewTaskDueDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
@@ -47,11 +56,15 @@ export function TaskList({
         projectId: selectedProjectId,
         status: newTaskStatus,
         priority: newTaskPriority,
+        description: newTaskDescription.trim() || null,
+        dueDate: newTaskDueDate || null,
       });
 
       setNewTaskName('');
       setNewTaskStatus('todo');
       setNewTaskPriority('medium');
+      setNewTaskDescription('');
+      setNewTaskDueDate('');
     }
   };
 
@@ -93,13 +106,13 @@ export function TaskList({
 
       {selectedProjectId ? (
         <form onSubmit={handleSubmit} className="mb-4">
-          <div className="flex gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
             <input
               type="text"
               value={newTaskName}
               onChange={(e) => setNewTaskName(e.target.value)}
               placeholder="New task name"
-              className="flex-1 px-3 py-2 border rounded-md"
+              className="px-3 py-2 border rounded-md sm:col-span-2"
             />
 
             <select
@@ -124,10 +137,25 @@ export function TaskList({
 
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
             >
               Add
             </button>
+          </div>
+          <div className="mt-2 grid grid-cols-1 gap-2">
+            <textarea
+              value={newTaskDescription}
+              onChange={(e) => setNewTaskDescription(e.target.value)}
+              placeholder="Task description"
+              className="min-h-20 px-3 py-2 border rounded-md"
+            />
+
+            <input
+              type="date"
+              value={newTaskDueDate}
+              onChange={(e) => setNewTaskDueDate(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            />
           </div>
         </form>
       ) : (
@@ -179,12 +207,12 @@ export function TaskList({
               selectedTaskId === task.id ? 'border-blue-500' : ''
             }`}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
                 {task.name}
               </span>
 
-              <div className="mt-2 flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <StatusBadge
                   value={task.status}
                   onChange={(status) => onUpdateTask(task.id, { status })}
@@ -203,7 +231,11 @@ export function TaskList({
                 Delete
               </button>
             </div>
+            {task.description && <p className="mt-2 text-sm text-gray-600">{task.description}</p>}
 
+            {task.due_date && (
+              <p className="mt-1 text-xs text-gray-500">Due date: {task.due_date}</p>
+            )}
             {selectedTaskId === task.id && (
               <div className="mt-4 border-t pt-4">
                 <PdfUpload

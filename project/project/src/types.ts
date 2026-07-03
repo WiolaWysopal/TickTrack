@@ -4,6 +4,8 @@ export interface Task {
   project_id: string;
   status: string;
   priority: string;
+  description: string | null;
+  due_date: string | null;
 }
 
 export interface Project {
