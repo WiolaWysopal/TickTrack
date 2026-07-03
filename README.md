@@ -12,13 +12,15 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 
 ### Task Management
 
-* ✅ Create, edit and delete tasks
+* ✅ Create and delete tasks
 * 📂 Organize tasks into projects
+* 📝 Add task descriptions
+* 📅 Assign due dates to tasks
 * 🚦 Assign task statuses (To Do, In Progress, Done)
 * 🎯 Set task priorities (Low, Medium, High)
 * ✏️ Update task status and priority directly from the task list
 * 🔍 Filter tasks by status and priority
-* 📅 Sort tasks by name, status and priority
+* 📊 Sort tasks by name, status and priority
 
 ### Time Tracking
 
@@ -194,6 +196,17 @@ Responsible for:
 * downloading files
 * deleting uploaded documents
 
+### TaskList
+
+Responsible for:
+
+* creating tasks
+* assigning statuses and priorities
+* adding task descriptions
+* assigning due dates
+* filtering and sorting tasks
+* managing attached files
+
 ### Timer
 
 Responsible for:
@@ -279,6 +292,7 @@ Implemented improvements include:
 * reusable upload components
 * sanitized storage paths
 * strongly typed Supabase responses
+* responsive task management interface
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -358,8 +372,10 @@ Main tables:
 
 The `tasks` table stores additional workflow information:
 
-* status (`todo`, `in_progress`, `done`)
-* priority (`low`, `medium`, `high`)
+* status (`todo`,    `in_progress`,    `done`)
+* priority (`low`,    `medium`,    `high`)
+* optional task description
+* optional due date
 
 Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
 
@@ -412,7 +428,7 @@ Planned features include:
 * task comments
 * Kanban board based on task statuses
 * custom task statuses
-* due dates and reminders
+* task reminders and notifications
 * calendar integration
 * export to PDF
 * dark mode improvements
