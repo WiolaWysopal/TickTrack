@@ -7,7 +7,7 @@ interface TaskListProps {
   tasks: Task[];
   selectedProjectId: string | null;
   selectedTaskId: string | null;
-  onAddTask: (task: { name: string; projectId: string }) => void;
+  onAddTask: (task: { name: string; projectId: string; status: string; priority: string }) => void;
   onSelectTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
 }
@@ -21,6 +21,8 @@ export function TaskList({
   onDeleteTask,
 }: TaskListProps) {
   const [newTaskName, setNewTaskName] = useState('');
+  const [newTaskStatus, setNewTaskStatus] = useState('todo');
+  const [newTaskPriority, setNewTaskPriority] = useState('medium');
   const [filesRefreshKey, setFilesRefreshKey] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,6 +32,8 @@ export function TaskList({
       onAddTask({
         name: newTaskName.trim(),
         projectId: selectedProjectId,
+        status: newTaskStatus,
+        priority: newTaskPriority,
       });
 
       setNewTaskName('');
@@ -52,6 +56,26 @@ export function TaskList({
               placeholder="New task name"
               className="flex-1 px-3 py-2 border rounded-md"
             />
+
+            <select
+              value={newTaskStatus}
+              onChange={(e) => setNewTaskStatus(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            >
+              <option value="todo">To do</option>
+              <option value="in_progress">In progress</option>
+              <option value="done">Done</option>
+            </select>
+
+            <select
+              value={newTaskPriority}
+              onChange={(e) => setNewTaskPriority(e.target.value)}
+              className="px-3 py-2 border rounded-md"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
 
             <button
               type="submit"
@@ -77,6 +101,12 @@ export function TaskList({
               <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
                 {task.name}
               </span>
+
+              <div className="mt-2 flex gap-2 text-xs">
+                <span className="rounded bg-gray-100 px-2 py-1">{task.status}</span>
+
+                <span className="rounded bg-gray-100 px-2 py-1">{task.priority}</span>
+              </div>
 
               <button
                 onClick={() => onDeleteTask(task.id)}

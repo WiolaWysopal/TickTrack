@@ -142,13 +142,25 @@ function App() {
     }
   };
 
-  const handleAddTask = async ({ name, projectId }: { name: string; projectId: string }) => {
+  const handleAddTask = async ({
+    name,
+    projectId,
+    status,
+    priority,
+  }: {
+    name: string;
+    projectId: string;
+    status: string;
+    priority: string;
+  }) => {
     if (!user) return;
 
     const newTask = {
       name,
       project_id: projectId,
       user_id: user.id,
+      status,
+      priority,
     };
 
     const { data, error } = await supabase.from('tasks').insert([newTask]).select().single();

@@ -2,6 +2,8 @@ export interface Task {
   id: string;
   name: string;
   project_id: string;
+  status: string;
+  priority: string;
 }
 
 export interface Project {
