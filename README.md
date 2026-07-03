@@ -14,9 +14,11 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 
 * ✅ Create, edit and delete tasks
 * 📂 Organize tasks into projects
-* ⭐ Mark tasks as favorites
-* 🔍 Search and filter tasks
-* 📅 Sort tasks by date
+* 🚦 Assign task statuses (To Do, In Progress, Done)
+* 🎯 Set task priorities (Low, Medium, High)
+* ✏️ Update task status and priority directly from the task list
+* 🔍 Filter tasks by status and priority
+* 📅 Sort tasks by name, status and priority
 
 ### Time Tracking
 
@@ -349,10 +351,15 @@ TickTrack stores application data inside Supabase PostgreSQL.
 
 Main tables:
 
-* users
-* projects
-* tasks
-* task_files
+* `users`
+* `projects`
+* `tasks`
+* `task_files`
+
+The `tasks` table stores additional workflow information:
+
+* status (`todo`, `in_progress`, `done`)
+* priority (`low`, `medium`, `high`)
 
 Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
 
@@ -403,7 +410,9 @@ Planned features include:
 * support for additional file types
 * drag & drop uploads
 * task comments
-* recurring tasks
+* Kanban board based on task statuses
+* custom task statuses
+* due dates and reminders
 * calendar integration
 * export to PDF
 * dark mode improvements
