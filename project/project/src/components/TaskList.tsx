@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { Task } from '../types';
 import PdfUpload from './PdfUpload';
 import TaskFilesList from './TaskFilesList';
+import { StatusBadge } from './StatusBadge';
+import { PriorityBadge } from './PriorityBadge';
 
 interface TaskListProps {
   tasks: Task[];
@@ -112,26 +114,16 @@ export function TaskList({
                 {task.name}
               </span>
 
-              <div className="mt-2 flex gap-2 text-xs">
-                <select
+              <div className="mt-2 flex gap-2">
+                <StatusBadge
                   value={task.status}
-                  onChange={(e) => onUpdateTask(task.id, { status: e.target.value })}
-                  className="rounded bg-gray-100 px-2 py-1"
-                >
-                  <option value="todo">To Do</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="done">Done</option>
-                </select>
+                  onChange={(status) => onUpdateTask(task.id, { status })}
+                />
 
-                <select
+                <PriorityBadge
                   value={task.priority}
-                  onChange={(e) => onUpdateTask(task.id, { priority: e.target.value })}
-                  className="rounded bg-gray-100 px-2 py-1"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
+                  onChange={(priority) => onUpdateTask(task.id, { priority })}
+                />
               </div>
 
               <button
