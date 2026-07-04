@@ -150,12 +150,16 @@ export function TaskList({
               className="min-h-20 px-3 py-2 border rounded-md"
             />
 
-            <input
-              type="date"
-              value={newTaskDueDate}
-              onChange={(e) => setNewTaskDueDate(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-            />
+            <div>
+              <label className="mb-1 block text-sm text-gray-600">Due date</label>
+
+              <input
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
           </div>
         </form>
       ) : (
@@ -200,54 +204,74 @@ export function TaskList({
       )}
 
       <ul className="space-y-2">
-        {filteredTasks.map((task) => (
-          <li
-            key={task.id}
-            className={`p-3 border rounded-md hover:bg-gray-50 ${
-              selectedTaskId === task.id ? 'border-blue-500' : ''
-            }`}
-          >
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
-                {task.name}
-              </span>
+        {filteredTasks.map((task) => {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
 
-              <div className="flex flex-wrap gap-2">
-                <StatusBadge
-                  value={task.status}
-                  onChange={(status) => onUpdateTask(task.id, { status })}
-                />
+          const dueDate = task.due_date ? new Date(task.due_date) : null;
 
-                <PriorityBadge
-                  value={task.priority}
-                  onChange={(priority) => onUpdateTask(task.id, { priority })}
-                />
+          if (dueDate) {
+            dueDate.setHours(0, 0, 0, 0);
+          }
+
+          const isOverdue = dueDate !== null && task.status !== 'done' && dueDate < today;
+
+          return (
+            <li
+              key={task.id}
+              className={`p-3 border rounded-md hover:bg-gray-50 ${
+                selectedTaskId === task.id ? 'border-blue-500' : ''
+              } ${isOverdue ? 'border-red-300 bg-red-50' : ''}`}
+            >
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
+                  {task.name}
+                </span>
+
+                <div className="flex flex-wrap gap-2">
+                  <StatusBadge
+                    value={task.status}
+                    onChange={(status) => onUpdateTask(task.id, { status })}
+                  />
+
+                  <PriorityBadge
+                    value={task.priority}
+                    onChange={(priority) => onUpdateTask(task.id, { priority })}
+                  />
+                </div>
+
+                <button
+                  onClick={() => onDeleteTask(task.id)}
+                  className="text-red-500 hover:text-red-700 px-2 py-1 rounded"
+                >
+                  Delete
+                </button>
               </div>
+              {task.description && <p className="mt-2 text-sm text-gray-600">{task.description}</p>}
 
-              <button
-                onClick={() => onDeleteTask(task.id)}
-                className="text-red-500 hover:text-red-700 px-2 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-            {task.description && <p className="mt-2 text-sm text-gray-600">{task.description}</p>}
+              {task.due_date && (
+                <p
+                  className={`mt-1 text-xs ${
+                    isOverdue ? 'text-red-600 font-medium' : 'text-gray-500'
+                  }`}
+                >
+                  {isOverdue ? <span className="font-semibold">⚠️ Overdue: </span> : 'Due date: '}
+                  {task.due_date}
+                </p>
+              )}
+              {selectedTaskId === task.id && (
+                <div className="mt-4 border-t pt-4">
+                  <PdfUpload
+                    taskId={task.id}
+                    onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
+                  />
 
-            {task.due_date && (
-              <p className="mt-1 text-xs text-gray-500">Due date: {task.due_date}</p>
-            )}
-            {selectedTaskId === task.id && (
-              <div className="mt-4 border-t pt-4">
-                <PdfUpload
-                  taskId={task.id}
-                  onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
-                />
-
-                <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
-              </div>
-            )}
-          </li>
-        ))}
+                  <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

@@ -21,6 +21,9 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * ✏️ Update task status and priority directly from the task list
 * 🔍 Filter tasks by status and priority
 * 📊 Sort tasks by name, status and priority
+* 📈 Dashboard with project statistics
+* 📊 Completion rate tracking
+* ⚠️ Highlight overdue tasks
 
 ### Time Tracking
 
@@ -160,6 +163,7 @@ The frontend communicates directly with Supabase using the official JavaScript S
 ```
 src/
 ├── components/
+│   ├── Dashboard.tsx
 │   ├── PdfUpload.tsx
 │   ├── TaskFilesList.tsx
 │   ├── Timer.tsx
@@ -177,6 +181,15 @@ src/
 The application is organized into reusable React components with Supabase configuration separated inside the `lib` directory.
 
 ## 🧩 Main Components
+
+### Dashboard
+
+Responsible for:
+
+* displaying project statistics
+* calculating task completion rate
+* showing overdue task count
+* summarizing tracked working time
 
 ### PdfUpload
 
@@ -293,6 +306,8 @@ Implemented improvements include:
 * sanitized storage paths
 * strongly typed Supabase responses
 * responsive task management interface
+* dashboard statistics
+* overdue task highlighting
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -372,8 +387,8 @@ Main tables:
 
 The `tasks` table stores additional workflow information:
 
-* status (`todo`,    `in_progress`,    `done`)
-* priority (`low`,    `medium`,    `high`)
+* status (`todo`, `in_progress`, `done`)
+* priority (`low`, `medium`, `high`)
 * optional task description
 * optional due date
 
