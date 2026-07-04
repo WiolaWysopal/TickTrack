@@ -16,6 +16,7 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
   const inProgressTasks = tasks.filter((task) => task.status === 'in_progress').length;
 
   const doneTasks = tasks.filter((task) => task.status === 'done').length;
+  const completionRate = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
   const highPriorityTasks = tasks.filter((task) => task.priority === 'high').length;
 
@@ -26,7 +27,13 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
   const overdueTasks = tasks.filter((task) => {
     if (!task.due_date) return false;
 
-    return task.status !== 'done' && new Date(task.due_date) < new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const dueDate = new Date(task.due_date);
+    dueDate.setHours(0, 0, 0, 0);
+
+    return task.status !== 'done' && dueDate < today;
   }).length;
 
   const totalTrackedSeconds = sessions.reduce((sum, session) => sum + session.duration, 0);
@@ -62,6 +69,10 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
         {
           title: 'Done',
           value: doneTasks,
+        },
+        {
+          title: 'Completion Rate',
+          value: `${completionRate}%`,
         },
         {
           title: 'High Priority',
