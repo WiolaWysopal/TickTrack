@@ -10,6 +10,7 @@ import type { Project, Task, TimeSession } from './types';
 import type { User } from '@supabase/supabase-js';
 import { LogOut, UserX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Dashboard } from './components/Dashboard';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -393,7 +394,12 @@ function App() {
             </button>
           </div>
         </div>
-
+        <Dashboard
+          projects={projects}
+          tasks={tasks}
+          sessions={sessions}
+          selectedProjectId={selectedProjectId}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <ProjectList
             projects={projects}
