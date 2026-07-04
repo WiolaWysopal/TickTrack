@@ -150,12 +150,16 @@ export function TaskList({
               className="min-h-20 px-3 py-2 border rounded-md"
             />
 
-            <input
-              type="date"
-              value={newTaskDueDate}
-              onChange={(e) => setNewTaskDueDate(e.target.value)}
-              className="px-3 py-2 border rounded-md"
-            />
+            <div>
+              <label className="mb-1 block text-sm text-gray-600">Due date</label>
+
+              <input
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-md"
+              />
+            </div>
           </div>
         </form>
       ) : (
