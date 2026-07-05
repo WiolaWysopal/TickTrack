@@ -1,4 +1,5 @@
 import type { Project, Task, TimeSession } from '../types';
+import { ProductivityCharts } from './ProductivityCharts';
 
 interface DashboardProps {
   projects: Project[];
@@ -172,6 +173,8 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
           </div>
         ))}
       </div>
+
+      {hasSelectedProject && <ProductivityCharts tasks={tasks} sessions={sessions} />}
     </div>
   );
 }
