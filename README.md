@@ -31,6 +31,20 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * ▶️ Start / pause / stop tracking
 * 📊 Automatic time calculation
 
+### Productivity Dashboard
+
+* 📊 Dashboard statistics
+* 📈 Completion rate tracking
+* ⚠️ Highlight overdue tasks
+* ⏱️ Total tracked time
+* 📅 Tasks due today
+* ✅ Tasks completed today
+* 🔁 Total number of time tracking sessions
+* 📊 Average tracked time per task
+* 📈 Productivity charts:
+  + Tracked Time Last 7 Days
+  + Tasks by Status
+
 ### File Management
 
 * 📄 Upload PDF files directly to tasks
@@ -61,6 +75,7 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * `Supabase` – backend-as-a-service (authentication + database)
 * `Node.js` / `npm` – dependency and script management
 * `Cloudflare` – domain management with DNS, SSL and performance optimizations
+* `Recharts` – chart library used for dashboard productivity visualizations
 
 ## 🤖 Project Origin
 
@@ -163,19 +178,33 @@ The frontend communicates directly with Supabase using the official JavaScript S
 ```
 src/
 ├── components/
+│   ├── AdSense.tsx
+│   ├── AdSenseVerification.tsx
+│   ├── Auth.tsx
 │   ├── Dashboard.tsx
+│   ├── PasswordReset.tsx
 │   ├── PdfUpload.tsx
+│   ├── PriorityBadge.tsx
+│   ├── ProductivityCharts.tsx
+│   ├── ProjectList.tsx
+│   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
-│   ├── Timer.tsx
-│   └── ...
+│   ├── TaskList.tsx
+│   └── Timer.tsx
 │
-├── pages/
-├── hooks/
 ├── lib/
-│   └── supabase.ts
-├── utils/
-├── types/
-└── assets/
+│
+├── App.css
+├── App.tsx
+├── index.css
+├── main.tsx
+├── registerSW.ts
+├── types.ts
+├── vite-env.d.ts
+│
+├── supabase/
+│
+├── ...
 ```
 
 The application is organized into reusable React components with Supabase configuration separated inside the `lib` directory.
@@ -190,6 +219,20 @@ Responsible for:
 * calculating task completion rate
 * showing overdue task count
 * summarizing tracked working time
+* showing productivity metrics
+* displaying tasks due today
+* displaying tasks completed today
+* calculating average task time
+* calculating total number of time tracking sessions
+
+### ProductivityCharts
+
+Responsible for:
+
+* displaying productivity charts
+* showing tracked time from the last 7 days
+* showing task distribution by status
+* visualizing productivity data using Recharts
 
 ### PdfUpload
 
@@ -308,6 +351,9 @@ Implemented improvements include:
 * responsive task management interface
 * dashboard statistics
 * overdue task highlighting
+* TypeScript type checking with `npm run typecheck`
+* fixed TypeScript project configuration for successful type checking
+* separated productivity charts into a reusable component
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -356,13 +402,10 @@ or manually create:
 ## 🧪 Available Scripts
 
 * `npm run dev` – start the development server
-
 * `npm run build` – build the app for production
-
 * `npm run preview` – preview the production build
-
 * `npm run lint` – lint code with ESLint
-
+* `npm run typecheck` – run TypeScript type checking
 * `npm run typecheck` – run TypeScript type checking
 
 ## 🔐 Supabase Environment Variables
@@ -387,10 +430,11 @@ Main tables:
 
 The `tasks` table stores additional workflow information:
 
-* status (`todo`, `in_progress`, `done`)
-* priority (`low`, `medium`, `high`)
+* status (`todo`,   `in_progress`,   `done`)
+* priority (`low`,   `medium`,   `high`)
 * optional task description
 * optional due date
+* completion timestamp (`completed_at`)
 
 Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
 
