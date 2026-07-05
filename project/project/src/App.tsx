@@ -323,9 +323,19 @@ function App() {
       priority?: string;
     }
   ) => {
+    const currentTask = tasks.find((task) => task.id === taskId);
+
+    const taskUpdates = {
+      ...updates,
+      ...(updates.status === 'done' && currentTask?.status !== 'done'
+        ? { completed_at: new Date().toISOString() }
+        : {}),
+      ...(updates.status && updates.status !== 'done' ? { completed_at: null } : {}),
+    };
+
     const { data, error } = await supabase
       .from('tasks')
-      .update(updates)
+      .update(taskUpdates)
       .eq('id', taskId)
       .select()
       .single();
