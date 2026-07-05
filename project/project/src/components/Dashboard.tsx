@@ -1,4 +1,5 @@
 import type { Project, Task, TimeSession } from '../types';
+import { ProductivityCharts } from './ProductivityCharts';
 
 interface DashboardProps {
   projects: Project[];
@@ -11,24 +12,25 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
   const totalProjects = projects.length;
   const totalTasks = tasks.length;
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
   const todoTasks = tasks.filter((task) => task.status === 'todo').length;
-
   const inProgressTasks = tasks.filter((task) => task.status === 'in_progress').length;
-
   const doneTasks = tasks.filter((task) => task.status === 'done').length;
+
   const completionRate = totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
   const highPriorityTasks = tasks.filter((task) => task.priority === 'high').length;
 
   const selectedProject = projects.find((project) => project.id === selectedProjectId);
-
   const hasSelectedProject = Boolean(selectedProjectId);
 
   const overdueTasks = tasks.filter((task) => {
     if (!task.due_date) return false;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const dueDate = new Date(task.due_date);
     dueDate.setHours(0, 0, 0, 0);
@@ -36,10 +38,49 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
     return task.status !== 'done' && dueDate < today;
   }).length;
 
+  const dueTodayTasks = tasks.filter((task) => {
+    if (!task.due_date) return false;
+
+    const dueDate = new Date(task.due_date);
+    dueDate.setHours(0, 0, 0, 0);
+
+    return dueDate.getTime() === today.getTime();
+  }).length;
+
+  const totalSessions = sessions.length;
+
   const totalTrackedSeconds = sessions.reduce((sum, session) => sum + session.duration, 0);
 
-  const hours = Math.floor(totalTrackedSeconds / 3600);
-  const minutes = Math.floor((totalTrackedSeconds % 3600) / 60);
+  const averageSessionSeconds =
+    totalSessions === 0 ? 0 : Math.round(totalTrackedSeconds / totalSessions);
+
+  const trackedTaskIds = new Set(sessions.map((session) => session.task_id));
+
+  const averageTaskSeconds =
+    trackedTaskIds.size === 0 ? 0 : Math.round(totalTrackedSeconds / trackedTaskIds.size);
+
+  const todaySessions = sessions.filter((session) => {
+    const startTime = new Date(session.start_time);
+
+    return startTime >= today && startTime < tomorrow;
+  });
+
+  const todayTrackedSeconds = todaySessions.reduce((sum, session) => sum + session.duration, 0);
+
+  const formatDuration = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+
+    return `${hours} h ${minutes} min`;
+  };
+
+  const completedTodayTasks = tasks.filter((task) => {
+    if (task.status !== 'done' || !task.completed_at) return false;
+
+    const completedAt = new Date(task.completed_at);
+
+    return completedAt >= today && completedAt < tomorrow;
+  }).length;
 
   const projectCards = [
     {
@@ -83,8 +124,32 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
           value: overdueTasks,
         },
         {
+          title: 'Due Today',
+          value: dueTodayTasks,
+        },
+        {
           title: 'Tracked Time',
-          value: `${hours} h ${minutes} min`,
+          value: formatDuration(totalTrackedSeconds),
+        },
+        {
+          title: 'Today Tracked',
+          value: formatDuration(todayTrackedSeconds),
+        },
+        {
+          title: 'Sessions',
+          value: totalSessions,
+        },
+        {
+          title: 'Average Session',
+          value: formatDuration(averageSessionSeconds),
+        },
+        {
+          title: 'Average Task Time',
+          value: formatDuration(averageTaskSeconds),
+        },
+        {
+          title: 'Completed Today',
+          value: completedTodayTasks,
         },
       ]
     : [];
@@ -99,6 +164,7 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
         {!hasSelectedProject && (
           <p className="mt-4 text-sm text-gray-500">Select a project to view task statistics.</p>
         )}
+
         {cards.map((card) => (
           <div key={card.title} className="rounded-lg bg-white p-5 shadow-md">
             <p className="text-sm text-gray-500">{card.title}</p>
@@ -107,6 +173,8 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
           </div>
         ))}
       </div>
+
+      {hasSelectedProject && <ProductivityCharts tasks={tasks} sessions={sessions} />}
     </div>
   );
 }

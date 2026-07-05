@@ -17,19 +17,30 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 📝 Add task descriptions
 * 📅 Assign due dates to tasks
 * 🚦 Assign task statuses (To Do, In Progress, Done)
-* 🎯 Set task priorities (Low, Medium, High)
+* 🎯 Assign task priorities (Low, Medium, High)
 * ✏️ Update task status and priority directly from the task list
 * 🔍 Filter tasks by status and priority
 * 📊 Sort tasks by name, status and priority
-* 📈 Dashboard with project statistics
-* 📊 Completion rate tracking
-* ⚠️ Highlight overdue tasks
 
 ### Time Tracking
 
 * ⏱️ Built-in task timer
 * ▶️ Start / pause / stop tracking
 * 📊 Automatic time calculation
+
+### Productivity Dashboard
+
+* 📊 Dashboard statistics
+* 📈 Completion rate tracking
+* ⚠️ Highlight overdue tasks
+* ⏱️ Total tracked time
+* 📅 Tasks due today
+* ✅ Tasks completed today
+* 🔁 Total number of time tracking sessions
+* 📊 Average tracked time per task
+* 📈 Productivity charts:
+  + Tracked Time Last 7 Days
+  + Tasks by Status
 
 ### File Management
 
@@ -61,6 +72,7 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * `Supabase` – backend-as-a-service (authentication + database)
 * `Node.js` / `npm` – dependency and script management
 * `Cloudflare` – domain management with DNS, SSL and performance optimizations
+* `Recharts` – chart library used for dashboard productivity visualizations
 
 ## 🤖 Project Origin
 
@@ -163,19 +175,35 @@ The frontend communicates directly with Supabase using the official JavaScript S
 ```
 src/
 ├── components/
+│   ├── AdSense.tsx
+│   ├── AdSenseVerification.tsx
+│   ├── Auth.tsx
 │   ├── Dashboard.tsx
+│   ├── PasswordReset.tsx
 │   ├── PdfUpload.tsx
+│   ├── PriorityBadge.tsx
+│   ├── ProductivityCharts.tsx
+│   ├── ProjectList.tsx
+│   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
-│   ├── Timer.tsx
-│   └── ...
+│   ├── TaskList.tsx
+│   └── Timer.tsx
 │
-├── pages/
-├── hooks/
 ├── lib/
+│   ├── directAuth.ts
 │   └── supabase.ts
-├── utils/
-├── types/
-└── assets/
+│
+├── App.css
+├── App.tsx
+├── index.css
+├── main.tsx
+├── registerSW.ts
+├── types.ts
+├── vite-env.d.ts
+│
+├── supabase/
+│
+├── ...
 ```
 
 The application is organized into reusable React components with Supabase configuration separated inside the `lib` directory.
@@ -190,6 +218,20 @@ Responsible for:
 * calculating task completion rate
 * showing overdue task count
 * summarizing tracked working time
+* showing productivity metrics
+* displaying tasks due today
+* displaying tasks completed today
+* calculating average task time
+* calculating total number of time tracking sessions
+
+### ProductivityCharts
+
+Responsible for:
+
+* displaying productivity charts
+* showing tracked time from the last 7 days
+* showing task distribution by status
+* visualizing productivity data using Recharts
 
 ### PdfUpload
 
@@ -295,7 +337,7 @@ The project follows modern React and TypeScript best practices.
 
 Implemented improvements include:
 
-* strict TypeScript type checking
+* strict TypeScript configuration
 * ESLint integration
 * React Hooks dependency validation
 * reusable React components
@@ -308,6 +350,9 @@ Implemented improvements include:
 * responsive task management interface
 * dashboard statistics
 * overdue task highlighting
+* automated type checking using `npm run typecheck`
+* fixed TypeScript project configuration for successful type checking
+* separated productivity charts into a reusable component
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -356,13 +401,9 @@ or manually create:
 ## 🧪 Available Scripts
 
 * `npm run dev` – start the development server
-
 * `npm run build` – build the app for production
-
 * `npm run preview` – preview the production build
-
 * `npm run lint` – lint code with ESLint
-
 * `npm run typecheck` – run TypeScript type checking
 
 ## 🔐 Supabase Environment Variables
@@ -376,23 +417,80 @@ VITE_SUPABASE_ANON_KEY="YOUR_PUBLIC_ANON_KEY"
 
 ## 🗄️ Database
 
-TickTrack stores application data inside Supabase PostgreSQL.
+TickTrack stores application data in a Supabase PostgreSQL database. The application uses relational tables linked by foreign keys to manage projects, tasks, tracked work sessions and attached documents.
 
-Main tables:
+### Main tables
 
-* `users`
-* `projects`
-* `tasks`
-* `task_files`
+#### `projects` 
 
-The `tasks` table stores additional workflow information:
+Stores user-created projects.
 
-* status (`todo`, `in_progress`, `done`)
-* priority (`low`, `medium`, `high`)
-* optional task description
+Fields include:
+
+* project name
+* owner (`user_id`)
+* creation timestamp
+
+#### `tasks` 
+
+Stores tasks assigned to projects.
+
+Fields include:
+
+* task name
+* associated project (`project_id`)
+* owner (`user_id`)
+* status (`todo`,  `in_progress`,  `done`)
+* priority (`low`,  `medium`,  `high`)
+* optional description
 * optional due date
+* completion timestamp (`completed_at`)
+* creation timestamp
 
-Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
+#### `time_sessions` 
+
+Stores tracked work sessions created by the timer.
+
+Each session contains:
+
+* related task (`task_id`)
+* related project (`project_id`)
+* owner (`user_id`)
+* session start and end time
+* tracked duration (seconds)
+* creation timestamp
+
+These records are used to calculate:
+
+* total tracked time
+* average task time
+* average session duration
+* number of sessions
+* productivity dashboard statistics
+* productivity charts
+
+#### `task_files` 
+
+Stores metadata for PDF documents attached to tasks.
+
+Fields include:
+
+* related task (`task_id`)
+* owner (`user_id`)
+* file name
+* storage path
+* creation timestamp
+
+The `task_files` table stores metadata only. Uploaded files themselves are stored in Supabase Storage. The actual PDF files are stored in **Supabase Storage** , while only their metadata is stored in PostgreSQL.
+
+### Relationships
+
+The database uses foreign keys to maintain relationships between entities:
+
+* one user can own multiple projects
+* one project can contain multiple tasks
+* one task can have multiple time sessions
+* one task can have multiple attached PDF files
 
 ## 🕒 Optional: Keeping Supabase Awake (CRON, GitHub Actions)
 

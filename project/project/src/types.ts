@@ -6,6 +6,7 @@ export interface Task {
   priority: string;
   description: string | null;
   due_date: string | null;
+  completed_at: string | null;
 }
 
 export interface Project {
