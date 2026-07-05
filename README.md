@@ -406,7 +406,6 @@ or manually create:
 * `npm run preview` – preview the production build
 * `npm run lint` – lint code with ESLint
 * `npm run typecheck` – run TypeScript type checking
-* `npm run typecheck` – run TypeScript type checking
 
 ## 🔐 Supabase Environment Variables
 
@@ -427,14 +426,17 @@ Main tables:
 * `projects`
 * `tasks`
 * `task_files`
+* `time_sessions`
 
 The `tasks` table stores additional workflow information:
 
-* status (`todo`,   `in_progress`,   `done`)
-* priority (`low`,   `medium`,   `high`)
+* status (`todo`,  `in_progress`,  `done`)
+* priority (`low`,  `medium`,  `high`)
 * optional task description
 * optional due date
 * completion timestamp (`completed_at`)
+
+The `time_sessions` table stores time tracking records used for total tracked time, session count, average task time and productivity charts.
 
 Uploaded documents are stored in Supabase Storage while their metadata is saved inside PostgreSQL.
 
