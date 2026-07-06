@@ -101,7 +101,7 @@ export function TaskList({
     });
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-900 dark:text-gray-100">
       <h2 className="text-xl font-semibold mb-4">Tasks</h2>
 
       {selectedProjectId ? (
@@ -112,13 +112,13 @@ export function TaskList({
               value={newTaskName}
               onChange={(e) => setNewTaskName(e.target.value)}
               placeholder="New task name"
-              className="px-3 py-2 border rounded-md sm:col-span-2"
+              className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:col-span-2"
             />
 
             <select
               value={newTaskStatus}
               onChange={(e) => setNewTaskStatus(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             >
               <option value="todo">To do</option>
               <option value="in_progress">In progress</option>
@@ -128,7 +128,7 @@ export function TaskList({
             <select
               value={newTaskPriority}
               onChange={(e) => setNewTaskPriority(e.target.value)}
-              className="px-3 py-2 border rounded-md"
+              className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -147,23 +147,25 @@ export function TaskList({
               value={newTaskDescription}
               onChange={(e) => setNewTaskDescription(e.target.value)}
               placeholder="Task description"
-              className="min-h-20 px-3 py-2 border rounded-md"
+              className="min-h-20 rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             />
 
             <div>
-              <label className="mb-1 block text-sm text-gray-600">Due date</label>
+              <label className="mb-1 block text-sm text-gray-600 dark:text-gray-300">
+                Due date
+              </label>
 
               <input
                 type="date"
                 value={newTaskDueDate}
                 onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
               />
             </div>
           </div>
         </form>
       ) : (
-        <p className="text-gray-500 mb-4">Select a project to add tasks</p>
+        <p className="text-gray-500 dark:text-gray-400 mb-4">Select a project to add tasks</p>
       )}
 
       {selectedProjectId && (
@@ -171,7 +173,7 @@ export function TaskList({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 border rounded-md"
+            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
           >
             <option value="all">All statuses</option>
             <option value="todo">To Do</option>
@@ -182,7 +184,7 @@ export function TaskList({
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="px-3 py-2 border rounded-md"
+            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
           >
             <option value="all">All priorities</option>
             <option value="low">Low</option>
@@ -193,7 +195,7 @@ export function TaskList({
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 border rounded-md"
+            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
           >
             <option value="newest">Default</option>
             <option value="name">Name</option>
@@ -219,9 +221,9 @@ export function TaskList({
           return (
             <li
               key={task.id}
-              className={`p-3 border rounded-md hover:bg-gray-50 ${
+              className={`rounded-md border p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 ${
                 selectedTaskId === task.id ? 'border-blue-500' : ''
-              } ${isOverdue ? 'border-red-300 bg-red-50' : ''}`}
+              } ${isOverdue ? 'border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950/40' : ''}`}
             >
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
@@ -247,12 +249,14 @@ export function TaskList({
                   Delete
                 </button>
               </div>
-              {task.description && <p className="mt-2 text-sm text-gray-600">{task.description}</p>}
+              {task.description && (
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{task.description}</p>
+              )}
 
               {task.due_date && (
                 <p
                   className={`mt-1 text-xs ${
-                    isOverdue ? 'text-red-600 font-medium' : 'text-gray-500'
+                    isOverdue ? 'text-red-600 font-medium' : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
                   {isOverdue ? <span className="font-semibold">⚠️ Overdue: </span> : 'Due date: '}
