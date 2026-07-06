@@ -4,7 +4,7 @@
 
 ## 💡 Why TickTrack?
 
-TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking and document storage inside a modern Progressive Web App powered by Supabase.
+TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking, document storage and a customizable light/dark user interface inside a modern Progressive Web App powered by Supabase.
 
 The application demonstrates practical usage of React, TypeScript, Supabase Authentication, PostgreSQL, Storage, Row Level Security (RLS) and Progressive Web App technologies.
 
@@ -61,11 +61,19 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 📱 Mobile-friendly
 * 🌙 Offline support
 
+### Appearance
+
+* 🌙 Light / Dark mode
+* 💾 Theme preference saved in localStorage
+* 🖥️ Automatic system theme detection
+* 🎨 Consistent theme across the entire application
+
 ## 🛠️ Tech Stack
 
 * `React 19`
 * `TypeScript`
 * `Tailwind CSS`
+* `localStorage` – persistent theme preferences
 * `Bolt.new` – initial project scaffold and selected UI components
 * `Vite` – as the frontend build tool
 * `PWA` – installable app experience with offline support
@@ -187,11 +195,13 @@ src/
 │   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
 │   ├── TaskList.tsx
+│   ├── ThemeToggle.tsx
 │   └── Timer.tsx
 │
 ├── lib/
 │   ├── directAuth.ts
 │   └── supabase.ts
+│   └── theme.ts
 │
 ├── App.css
 ├── App.tsx
@@ -269,6 +279,14 @@ Responsible for:
 * tracking task duration
 * start, pause and stop functionality
 * displaying elapsed time
+
+### ThemeToggle
+
+Responsible for:
+
+* switching between light and dark mode
+* saving user theme preferences
+* updating the global application theme
 
 ## 📄 Task Attachments
 
@@ -353,6 +371,10 @@ Implemented improvements include:
 * automated type checking using `npm run typecheck`
 * fixed TypeScript project configuration for successful type checking
 * separated productivity charts into a reusable component
+* centralized theme management
+* persistent user theme preferences
+* system color scheme detection
+* reusable theme toggle component
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -440,8 +462,8 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,  `in_progress`,  `done`)
-* priority (`low`,  `medium`,  `high`)
+* status (`todo`,   `in_progress`,   `done`)
+* priority (`low`,   `medium`,   `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
@@ -544,7 +566,6 @@ Planned features include:
 * task reminders and notifications
 * calendar integration
 * export to PDF
-* dark mode improvements
 * team collaboration
 
 ## 🌐 Live Demo
