@@ -11,6 +11,8 @@ import type { User } from '@supabase/supabase-js';
 import { LogOut, UserX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Dashboard } from './components/Dashboard';
+import { ThemeToggle } from './components/ThemeToggle';
+import { applyTheme, getInitialTheme, type Theme } from './lib/theme';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
@@ -25,7 +27,13 @@ function App() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     // Check current auth status
@@ -115,6 +123,10 @@ function App() {
       loadSessions();
     }
   }, [user, selectedProjectId]);
+
+  const handleToggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleAddProject = async ({ name }: { name: string }) => {
     if (!user) return;
@@ -354,15 +366,15 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="text-2xl text-gray-600">Loading...</div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-950">
+        <div className="text-2xl text-gray-600 dark:text-gray-300">Loading...</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-950">
         <div className="flex-grow">
           <Auth />
         </div>
@@ -376,7 +388,7 @@ function App() {
   const selectedProject = taskProjectId ? projects.find((p) => p.id === taskProjectId) : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gray-100 py-8 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       <div className="max-w-6xl mx-auto px-4">
         {/* Top ad with proper spacing */}
         <div className="mb-8 -mt-4">
@@ -384,8 +396,9 @@ function App() {
         </div>
 
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">TickTrack</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">TickTrack</h1>
           <div className="flex space-x-2">
+            <ThemeToggle theme={theme} onToggleTheme={handleToggleTheme} />
             <button
               onClick={() => setShowDeleteConfirm(true)}
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 flex items-center gap-2"
@@ -396,7 +409,7 @@ function App() {
             </button>
             <button
               onClick={handleSignOut}
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 flex items-center gap-2"
+              className="flex items-center gap-2 rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
               title="Sign Out"
             >
               <LogOut className="w-5 h-5" />
@@ -456,7 +469,7 @@ function App() {
       {/* Delete Account Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
             <h3 className="text-xl font-bold mb-4">Delete Account</h3>
 
             {!showPasswordInput ? (
@@ -472,7 +485,7 @@ function App() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full px-3 py-2 border rounded-md"
+                  className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
                 />
               </div>
             )}
@@ -486,7 +499,7 @@ function App() {
             <div className="flex justify-end space-x-3">
               <button
                 onClick={resetDeleteAccountStates}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
                 disabled={deleteLoading}
               >
                 Cancel
