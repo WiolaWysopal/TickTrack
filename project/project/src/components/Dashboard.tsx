@@ -1,5 +1,6 @@
 import type { Project, Task, TimeSession } from '../types';
 import { ProductivityCharts } from './ProductivityCharts';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface DashboardProps {
   projects: Project[];
@@ -168,14 +169,12 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
         )}
 
         {cards.map((card) => (
-          <div
-            key={card.title}
-            className="rounded-lg bg-white p-5 shadow-md dark:bg-gray-900 dark:text-gray-100"
-          >
-            <p className="text-sm text-gray-500 dark:text-gray-400">{card.title}</p>
-
-            <p className="mt-2 text-2xl font-bold">{card.value}</p>
-          </div>
+          <Card key={card.title}>
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">{card.title}</p>
+              <p className="mt-2 text-2xl font-bold">{card.value}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 

@@ -4,6 +4,10 @@ import PdfUpload from './PdfUpload';
 import TaskFilesList from './TaskFilesList';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 interface TaskListProps {
   tasks: Task[];
@@ -101,182 +105,180 @@ export function TaskList({
     });
 
   return (
-    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-900 dark:text-gray-100">
-      <h2 className="text-xl font-semibold mb-4">Tasks</h2>
+    <Card>
+      <CardHeader>
+        <CardTitle>Tasks</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {selectedProjectId ? (
+          <form onSubmit={handleSubmit} className="mb-4">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
+              <Input
+                type="text"
+                value={newTaskName}
+                onChange={(e) => setNewTaskName(e.target.value)}
+                placeholder="New task name"
+                className="sm:col-span-2"
+              />
 
-      {selectedProjectId ? (
-        <form onSubmit={handleSubmit} className="mb-4">
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
-            <input
-              type="text"
-              value={newTaskName}
-              onChange={(e) => setNewTaskName(e.target.value)}
-              placeholder="New task name"
-              className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:col-span-2"
-            />
+              <select
+                value={newTaskStatus}
+                onChange={(e) => setNewTaskStatus(e.target.value)}
+                className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
+              >
+                <option value="todo">To do</option>
+                <option value="in_progress">In progress</option>
+                <option value="done">Done</option>
+              </select>
 
+              <select
+                value={newTaskPriority}
+                onChange={(e) => setNewTaskPriority(e.target.value)}
+                className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+
+              <Button type="submit" className="w-full">
+                Add
+              </Button>
+            </div>
+            <div className="mt-2 grid grid-cols-1 gap-2">
+              <Textarea
+                value={newTaskDescription}
+                onChange={(e) => setNewTaskDescription(e.target.value)}
+                placeholder="Task description"
+                className="min-h-20"
+              />
+
+              <div>
+                <label className="mb-1 block text-sm text-gray-600 dark:text-gray-300">
+                  Due date
+                </label>
+
+                <Input
+                  type="date"
+                  value={newTaskDueDate}
+                  onChange={(e) => setNewTaskDueDate(e.target.value)}
+                />
+              </div>
+            </div>
+          </form>
+        ) : (
+          <p className="text-gray-500 dark:text-gray-400 mb-4">Select a project to add tasks</p>
+        )}
+
+        {selectedProjectId && (
+          <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
             <select
-              value={newTaskStatus}
-              onChange={(e) => setNewTaskStatus(e.target.value)}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
               className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             >
-              <option value="todo">To do</option>
-              <option value="in_progress">In progress</option>
+              <option value="all">All statuses</option>
+              <option value="todo">To Do</option>
+              <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
             </select>
 
             <select
-              value={newTaskPriority}
-              onChange={(e) => setNewTaskPriority(e.target.value)}
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
               className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             >
+              <option value="all">All priorities</option>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
 
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
             >
-              Add
-            </button>
+              <option value="newest">Default</option>
+              <option value="name">Name</option>
+              <option value="priority">Priority</option>
+              <option value="status">Status</option>
+            </select>
           </div>
-          <div className="mt-2 grid grid-cols-1 gap-2">
-            <textarea
-              value={newTaskDescription}
-              onChange={(e) => setNewTaskDescription(e.target.value)}
-              placeholder="Task description"
-              className="min-h-20 rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
-            />
+        )}
 
-            <div>
-              <label className="mb-1 block text-sm text-gray-600 dark:text-gray-300">
-                Due date
-              </label>
+        <ul className="space-y-2">
+          {filteredTasks.map((task) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-              <input
-                type="date"
-                value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
-                className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-              />
-            </div>
-          </div>
-        </form>
-      ) : (
-        <p className="text-gray-500 dark:text-gray-400 mb-4">Select a project to add tasks</p>
-      )}
+            const dueDate = task.due_date ? new Date(task.due_date) : null;
 
-      {selectedProjectId && (
-        <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
-          >
-            <option value="all">All statuses</option>
-            <option value="todo">To Do</option>
-            <option value="in_progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
+            if (dueDate) {
+              dueDate.setHours(0, 0, 0, 0);
+            }
 
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
-          >
-            <option value="all">All priorities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+            const isOverdue = dueDate !== null && task.status !== 'done' && dueDate < today;
 
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
-          >
-            <option value="newest">Default</option>
-            <option value="name">Name</option>
-            <option value="priority">Priority</option>
-            <option value="status">Status</option>
-          </select>
-        </div>
-      )}
+            return (
+              <li
+                key={task.id}
+                className={`rounded-md border p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 ${
+                  selectedTaskId === task.id ? 'border-blue-500' : ''
+                } ${isOverdue ? 'border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950/40' : ''}`}
+              >
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
+                    {task.name}
+                  </span>
 
-      <ul className="space-y-2">
-        {filteredTasks.map((task) => {
-          const today = new Date();
-          today.setHours(0, 0, 0, 0);
+                  <div className="flex flex-wrap gap-2">
+                    <StatusBadge
+                      value={task.status}
+                      onChange={(status) => onUpdateTask(task.id, { status })}
+                    />
 
-          const dueDate = task.due_date ? new Date(task.due_date) : null;
+                    <PriorityBadge
+                      value={task.priority}
+                      onChange={(priority) => onUpdateTask(task.id, { priority })}
+                    />
+                  </div>
 
-          if (dueDate) {
-            dueDate.setHours(0, 0, 0, 0);
-          }
-
-          const isOverdue = dueDate !== null && task.status !== 'done' && dueDate < today;
-
-          return (
-            <li
-              key={task.id}
-              className={`rounded-md border p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 ${
-                selectedTaskId === task.id ? 'border-blue-500' : ''
-              } ${isOverdue ? 'border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-950/40' : ''}`}
-            >
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span onClick={() => onSelectTask(task.id)} className="cursor-pointer flex-grow">
-                  {task.name}
-                </span>
-
-                <div className="flex flex-wrap gap-2">
-                  <StatusBadge
-                    value={task.status}
-                    onChange={(status) => onUpdateTask(task.id, { status })}
-                  />
-
-                  <PriorityBadge
-                    value={task.priority}
-                    onChange={(priority) => onUpdateTask(task.id, { priority })}
-                  />
+                  <Button variant="ghost" size="sm" onClick={() => onDeleteTask(task.id)}>
+                    Delete
+                  </Button>
                 </div>
+                {task.description && (
+                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    {task.description}
+                  </p>
+                )}
 
-                <button
-                  onClick={() => onDeleteTask(task.id)}
-                  className="text-red-500 hover:text-red-700 px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-              {task.description && (
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{task.description}</p>
-              )}
+                {task.due_date && (
+                  <p
+                    className={`mt-1 text-xs ${
+                      isOverdue ? 'text-red-600 font-medium' : 'text-gray-500 dark:text-gray-400'
+                    }`}
+                  >
+                    {isOverdue ? <span className="font-semibold">⚠️ Overdue: </span> : 'Due date: '}
+                    {task.due_date}
+                  </p>
+                )}
+                {selectedTaskId === task.id && (
+                  <div className="mt-4 border-t pt-4">
+                    <PdfUpload
+                      taskId={task.id}
+                      onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
+                    />
 
-              {task.due_date && (
-                <p
-                  className={`mt-1 text-xs ${
-                    isOverdue ? 'text-red-600 font-medium' : 'text-gray-500 dark:text-gray-400'
-                  }`}
-                >
-                  {isOverdue ? <span className="font-semibold">⚠️ Overdue: </span> : 'Due date: '}
-                  {task.due_date}
-                </p>
-              )}
-              {selectedTaskId === task.id && (
-                <div className="mt-4 border-t pt-4">
-                  <PdfUpload
-                    taskId={task.id}
-                    onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
-                  />
-
-                  <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+                    <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </CardContent>
+    </Card>
   );
 }
