@@ -25,19 +25,21 @@ export function SessionList({ sessions, tasks, projects, onDeleteSession }: Sess
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-900 dark:text-gray-100">
       <h2 className="text-xl font-semibold mb-4">Time Sessions</h2>
       <div className="space-y-4">
         {sessions.map((session) => (
-          <div key={session.id} className="border p-4 rounded-md">
+          <div key={session.id} className="rounded-md border p-4 dark:border-gray-700">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-medium">{getTaskName(session.task_id)}</h3>
-                <p className="text-sm text-gray-600">{getProjectName(session.project_id)}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  {getProjectName(session.project_id)}
+                </p>
               </div>
               <div className="flex items-start gap-4">
                 <div className="text-right">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     {format(parseISO(session.start_time), 'MMM d, yyyy HH:mm')}
                   </p>
                   <p className="font-medium">{formatDuration(session.duration)}</p>
@@ -54,7 +56,9 @@ export function SessionList({ sessions, tasks, projects, onDeleteSession }: Sess
           </div>
         ))}
         {sessions.length === 0 && (
-          <p className="text-gray-500 text-center py-4">No time sessions recorded yet</p>
+          <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+            No time sessions recorded yet
+          </p>
         )}
       </div>
     </div>

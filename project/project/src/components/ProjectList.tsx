@@ -27,7 +27,7 @@ export function ProjectList({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-900 dark:text-gray-100">
       <h2 className="text-xl font-semibold mb-4">Projects</h2>
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="flex gap-2">
@@ -36,7 +36,7 @@ export function ProjectList({
             value={newProjectName}
             onChange={(e) => setNewProjectName(e.target.value)}
             placeholder="New project name"
-            className="flex-1 px-3 py-2 border rounded-md"
+            className="flex-1 rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400"
           />
           <button
             type="submit"
@@ -50,7 +50,7 @@ export function ProjectList({
         {projects.map((project) => (
           <li
             key={project.id}
-            className={`p-3 border rounded-md hover:bg-gray-50 ${
+            className={`rounded-md border p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 ${
               selectedProjectId === project.id ? 'border-blue-500' : ''
             }`}
           >

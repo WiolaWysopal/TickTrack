@@ -6,6 +6,10 @@ interface ProductivityChartsProps {
   sessions: TimeSession[];
 }
 
+const axisTick = {
+  fill: 'currentColor',
+};
+
 export function ProductivityCharts({ tasks, sessions }: ProductivityChartsProps) {
   const statusData = [
     {
@@ -58,36 +62,56 @@ export function ProductivityCharts({ tasks, sessions }: ProductivityChartsProps)
 
   return (
     <div className="mt-8">
-      <h3 className="mb-4 text-xl font-semibold">Productivity Charts</h3>
+      <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
+        Productivity Charts
+      </h3>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-lg bg-white p-5 shadow-md">
-          <h4 className="mb-4 text-lg font-semibold">Tracked Time Last 7 Days</h4>
+        <div className="rounded-lg bg-white p-5 text-gray-900 shadow-md dark:bg-gray-900 dark:text-gray-100">
+          <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Tracked Time Last 7 Days
+          </h4>
 
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={trackedTimeData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="hours" name="Hours" />
+                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.2} />
+                <XAxis dataKey="day" tick={axisTick} stroke="currentColor" />
+                <YAxis tick={axisTick} stroke="currentColor" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgb(17 24 39)',
+                    border: '1px solid rgb(55 65 81)',
+                    borderRadius: '0.5rem',
+                    color: 'rgb(243 244 246)',
+                  }}
+                />
+                <Bar dataKey="hours" name="Hours" fill="currentColor" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="rounded-lg bg-white p-5 shadow-md">
-          <h4 className="mb-4 text-lg font-semibold">Tasks by Status</h4>
+        <div className="rounded-lg bg-white p-5 text-gray-900 shadow-md dark:bg-gray-900 dark:text-gray-100">
+          <h4 className="mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+            Tasks by Status
+          </h4>
 
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={statusData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
-                <Bar dataKey="tasks" name="Tasks" />
+                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.2} />
+                <XAxis dataKey="name" tick={axisTick} stroke="currentColor" />
+                <YAxis allowDecimals={false} tick={axisTick} stroke="currentColor" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'rgb(17 24 39)',
+                    border: '1px solid rgb(55 65 81)',
+                    borderRadius: '0.5rem',
+                    color: 'rgb(243 244 246)',
+                  }}
+                />
+                <Bar dataKey="tasks" name="Tasks" fill="currentColor" />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -77,15 +77,15 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
 
   return (
     <div
-      className={`fixed md:relative bg-white p-6 rounded-lg shadow-md transition-all duration-300 ease-in-out z-50 ${
+      className={`fixed rounded-lg bg-white p-6 shadow-md transition-all duration-300 ease-in-out dark:bg-gray-900 dark:text-gray-100 md:relative z-50 ${
         isRunning
           ? 'bottom-0 left-0 right-0 md:bottom-auto'
           : 'bottom-0 left-0 right-0 md:bottom-auto'
       }`}
     >
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-gray-900">{projectName}</h2>
-        <p className="text-gray-600">{taskName}</p>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{projectName}</h2>
+        <p className="text-gray-600 dark:text-gray-300">{taskName}</p>
       </div>
       <div className="text-4xl font-mono mb-4">{formatTime(elapsedTime)}</div>
       <div className="flex gap-4 justify-center">

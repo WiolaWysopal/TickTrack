@@ -107,13 +107,17 @@ export function Auth() {
   };
 
   return (
-    <div className="auth-page min-h-screen bg-gray-100 flex flex-col py-12 px-4 sm:px-6 lg:px-8">
+    <div className="auth-page flex min-h-screen flex-col bg-gray-100 px-4 py-12 dark:bg-gray-950 sm:px-6 lg:px-8">
       <div className="flex-grow flex items-center justify-center">
-        <div className="max-w-md w-full space-y-8 auth-container bg-white p-8 rounded-lg shadow-md">
+        <div className="auth-container w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-md dark:bg-gray-900 dark:text-gray-100">
           <div>
-            <h1 className="text-center text-4xl font-bold text-gray-900 mb-2">TickTrack</h1>
-            <p className="text-center text-lg text-gray-600 mb-8">Your time tracking companion</p>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            <h1 className="text-center text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              TickTrack
+            </h1>
+            <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8">
+              Your time tracking companion
+            </p>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
               {isResetMode
                 ? 'Reset Your Password'
                 : isSignUpMode
@@ -121,12 +125,12 @@ export function Auth() {
                   : 'Sign in to your account'}
             </h2>
             {isResetMode && (
-              <p className="mt-2 text-center text-sm text-gray-600">
+              <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
                 Enter your email to receive a password reset link
               </p>
             )}
             {isSignUpMode && (
-              <p className="mt-2 text-center text-sm text-gray-600">
+              <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
                 Fill in the details below to create your account
               </p>
             )}
@@ -147,7 +151,10 @@ export function Auth() {
           {isResetMode ? (
             <form className="mt-8 space-y-6" onSubmit={handlePasswordReset}>
               <div>
-                <label htmlFor="reset-email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="reset-email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email address
                 </label>
                 <input
@@ -155,7 +162,7 @@ export function Auth() {
                   name="email"
                   type="email"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -183,7 +190,10 @@ export function Auth() {
           ) : isSignUpMode ? (
             <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
               <div>
-                <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="signup-email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email address
                 </label>
                 <input
@@ -191,7 +201,7 @@ export function Auth() {
                   name="email"
                   type="email"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -201,7 +211,7 @@ export function Auth() {
               <div>
                 <label
                   htmlFor="signup-password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Password
                 </label>
@@ -210,7 +220,7 @@ export function Auth() {
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -221,7 +231,7 @@ export function Auth() {
               <div>
                 <label
                   htmlFor="confirm-password"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   Confirm Password
                 </label>
@@ -230,7 +240,7 @@ export function Auth() {
                   name="confirm-password"
                   type="password"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Confirm password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -259,7 +269,10 @@ export function Auth() {
           ) : (
             <form className="mt-8 space-y-6" onSubmit={handleLogin}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email address
                 </label>
                 <input
@@ -267,7 +280,7 @@ export function Auth() {
                   name="email"
                   type="email"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -275,7 +288,10 @@ export function Auth() {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Password
                 </label>
                 <input
@@ -283,7 +299,7 @@ export function Auth() {
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mt-1"
+                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

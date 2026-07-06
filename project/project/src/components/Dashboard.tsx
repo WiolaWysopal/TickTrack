@@ -162,12 +162,17 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {!hasSelectedProject && (
-          <p className="mt-4 text-sm text-gray-500">Select a project to view task statistics.</p>
+          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+            Select a project to view task statistics.
+          </p>
         )}
 
         {cards.map((card) => (
-          <div key={card.title} className="rounded-lg bg-white p-5 shadow-md">
-            <p className="text-sm text-gray-500">{card.title}</p>
+          <div
+            key={card.title}
+            className="rounded-lg bg-white p-5 shadow-md dark:bg-gray-900 dark:text-gray-100"
+          >
+            <p className="text-sm text-gray-500 dark:text-gray-400">{card.title}</p>
 
             <p className="mt-2 text-2xl font-bold">{card.value}</p>
           </div>
