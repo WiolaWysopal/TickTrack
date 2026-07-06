@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { Button } from './ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Input } from './ui/input';
 
 export function Auth() {
   const [loading, setLoading] = useState(false);
@@ -34,7 +37,7 @@ export function Auth() {
   const handlePasswordReset = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (isResetMode && !email) {
+    if (!email) {
       setError('Please enter your email address');
       return;
     }
@@ -48,9 +51,7 @@ export function Auth() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      if (resetError) {
-        throw resetError;
-      }
+      if (resetError) throw resetError;
 
       setSuccess('Password reset link has been sent to your email. Please check your inbox.');
     } catch (error) {
@@ -106,251 +107,223 @@ export function Auth() {
     setConfirmPassword('');
   };
 
+  const showResetMode = () => {
+    setIsResetMode(true);
+    setIsSignUpMode(false);
+    setError(null);
+    setSuccess(null);
+    setPassword('');
+    setConfirmPassword('');
+  };
+
+  const showSignUpMode = () => {
+    setIsSignUpMode(true);
+    setIsResetMode(false);
+    setError(null);
+    setSuccess(null);
+    setPassword('');
+    setConfirmPassword('');
+  };
+
+  const title = isResetMode
+    ? 'Reset Your Password'
+    : isSignUpMode
+      ? 'Create an Account'
+      : 'Sign in to your account';
+
+  const description = isResetMode
+    ? 'Enter your email to receive a password reset link.'
+    : isSignUpMode
+      ? 'Fill in the details below to create your account.'
+      : 'Welcome back. Enter your credentials to continue.';
+
   return (
     <div className="auth-page flex min-h-screen flex-col bg-gray-100 px-4 py-12 dark:bg-gray-950 sm:px-6 lg:px-8">
-      <div className="flex-grow flex items-center justify-center">
-        <div className="auth-container w-full max-w-md space-y-8 rounded-lg bg-white p-8 shadow-md dark:bg-gray-900 dark:text-gray-100">
-          <div>
-            <h1 className="text-center text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              TickTrack
-            </h1>
-            <p className="text-center text-lg text-gray-600 dark:text-gray-300 mb-8">
-              Your time tracking companion
-            </p>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-100">
-              {isResetMode
-                ? 'Reset Your Password'
-                : isSignUpMode
-                  ? 'Create an Account'
-                  : 'Sign in to your account'}
-            </h2>
-            {isResetMode && (
-              <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
-                Enter your email to receive a password reset link
-              </p>
+      <div className="flex flex-grow items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">TickTrack</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300">Your time tracking companion</p>
+
+            <CardTitle className="pt-4 text-3xl">{title}</CardTitle>
+            <CardDescription>{description}</CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            {error && (
+              <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+                {error}
+              </div>
             )}
-            {isSignUpMode && (
-              <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
-                Fill in the details below to create your account
-              </p>
+
+            {success && (
+              <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
+                {success}
+              </div>
             )}
-          </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
-              {success}
-            </div>
-          )}
-
-          {isResetMode ? (
-            <form className="mt-8 space-y-6" onSubmit={handlePasswordReset}>
-              <div>
-                <label
-                  htmlFor="reset-email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Email address
-                </label>
-                <input
-                  id="reset-email"
-                  name="email"
-                  type="email"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-3">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  {loading ? 'Processing...' : 'Send Reset Link'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="text-indigo-600 hover:text-indigo-500 text-sm"
-                >
-                  Back to login
-                </button>
-              </div>
-            </form>
-          ) : isSignUpMode ? (
-            <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
-              <div>
-                <label
-                  htmlFor="signup-email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Email address
-                </label>
-                <input
-                  id="signup-email"
-                  name="email"
-                  type="email"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="signup-password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Password
-                </label>
-                <input
-                  id="signup-password"
-                  name="password"
-                  type="password"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={6}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="confirm-password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  id="confirm-password"
-                  name="confirm-password"
-                  type="password"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Confirm password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  minLength={6}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-3">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  {loading ? 'Creating account...' : 'Create Account'}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="text-indigo-600 hover:text-indigo-500 text-sm"
-                >
-                  Back to login
-                </button>
-              </div>
-            </form>
-          ) : (
-            <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  className="relative mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={6}
-                />
-              </div>
-
-              <div className="flex flex-col space-y-3">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  {loading ? 'Signing in...' : 'Sign in'}
-                </button>
-
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsResetMode(true);
-                      setIsSignUpMode(false);
-                      setError(null);
-                      setSuccess(null);
-                      setPassword('');
-                      setConfirmPassword('');
-                    }}
-                    className="text-indigo-600 hover:text-indigo-500 text-sm"
+            {isResetMode ? (
+              <form className="space-y-6" onSubmit={handlePasswordReset}>
+                <div>
+                  <label
+                    htmlFor="reset-email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
-                    Forgot password?
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsSignUpMode(true);
-                      setIsResetMode(false);
-                      setError(null);
-                      setSuccess(null);
-                      setPassword('');
-                      setConfirmPassword('');
-                    }}
-                    className="text-indigo-600 hover:text-indigo-500 text-sm"
-                  >
-                    Create account
-                  </button>
+                    Email address
+                  </label>
+                  <Input
+                    id="reset-email"
+                    name="email"
+                    type="email"
+                    required
+                    className="mt-1"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
-              </div>
-            </form>
-          )}
-        </div>
+
+                <div className="flex flex-col space-y-3">
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? 'Processing...' : 'Send Reset Link'}
+                  </Button>
+
+                  <Button type="button" variant="link" onClick={resetForm}>
+                    Back to login
+                  </Button>
+                </div>
+              </form>
+            ) : isSignUpMode ? (
+              <form className="space-y-6" onSubmit={handleSignUp}>
+                <div>
+                  <label
+                    htmlFor="signup-email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Email address
+                  </label>
+                  <Input
+                    id="signup-email"
+                    name="email"
+                    type="email"
+                    required
+                    className="mt-1"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="signup-password"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Password
+                  </label>
+                  <Input
+                    id="signup-password"
+                    name="password"
+                    type="password"
+                    required
+                    className="mt-1"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    minLength={6}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="confirm-password"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Confirm Password
+                  </label>
+                  <Input
+                    id="confirm-password"
+                    name="confirm-password"
+                    type="password"
+                    required
+                    className="mt-1"
+                    placeholder="Confirm password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    minLength={6}
+                  />
+                </div>
+
+                <div className="flex flex-col space-y-3">
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? 'Creating account...' : 'Create Account'}
+                  </Button>
+
+                  <Button type="button" variant="link" onClick={resetForm}>
+                    Back to login
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <form className="space-y-6" onSubmit={handleLogin}>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Email address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    className="mt-1"
+                    placeholder="Email address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Password
+                  </label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    className="mt-1"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    minLength={6}
+                  />
+                </div>
+
+                <div className="flex flex-col space-y-3">
+                  <Button type="submit" disabled={loading} className="w-full">
+                    {loading ? 'Signing in...' : 'Sign in'}
+                  </Button>
+
+                  <div className="flex justify-between">
+                    <Button type="button" variant="link" className="px-0" onClick={showResetMode}>
+                      Forgot password?
+                    </Button>
+
+                    <Button type="button" variant="link" className="px-0" onClick={showSignUpMode}>
+                      Create account
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
