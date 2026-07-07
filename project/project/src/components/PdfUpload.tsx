@@ -128,9 +128,11 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
   };
 
   return (
-    <div className="rounded-md border p-4 shadow-sm">
-      <h3 className="mb-1 text-lg font-semibold">Upload task PDF</h3>
-      <p className="mb-3 text-xs text-gray-500">
+    <div className="rounded-md border border-gray-200 p-4 shadow-sm dark:border-gray-700">
+      <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Upload task PDF
+      </h3>
+      <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
         Accepted format: PDF. Maximum size: {MAX_FILE_SIZE_MB} MB.
       </p>
 
@@ -146,18 +148,21 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
 
         <label
           htmlFor={`pdf-upload-${taskId}`}
-          className="cursor-pointer rounded-md bg-gray-200 px-4 py-2 hover:bg-gray-300"
+          className="cursor-pointer rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700"
         >
           Choose PDF
         </label>
 
         <div className="min-w-0 flex-1">
           {file ? (
-            <span className="block truncate text-sm text-gray-600" title={file.name}>
+            <span
+              className="block truncate text-sm text-gray-700 dark:text-gray-300"
+              title={file.name}
+            >
               {file.name}
             </span>
           ) : (
-            <span className="block text-sm text-gray-400">No file selected</span>
+            <span className="block text-sm text-gray-500 dark:text-gray-400">No file selected</span>
           )}
         </div>
 
@@ -165,7 +170,7 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
           type="button"
           onClick={handleUpload}
           disabled={uploading || !file}
-          className="shrink-0 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400"
+          className="shrink-0 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 dark:bg-blue-500 dark:hover:bg-blue-600 dark:disabled:bg-gray-700 dark:disabled:text-gray-400"
         >
           {uploading ? 'Uploading...' : 'Upload PDF'}
         </button>
@@ -173,7 +178,11 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
 
       {message && (
         <p
-          className={`mt-2 text-sm ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}
+          className={`mt-2 text-sm ${
+            messageType === 'error'
+              ? 'text-red-600 dark:text-red-400'
+              : 'text-green-600 dark:text-green-400'
+          }`}
         >
           {message}
         </p>

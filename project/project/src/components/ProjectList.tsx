@@ -34,8 +34,8 @@ export function ProjectList({
       <CardHeader>
         <CardTitle>Projects</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="mb-4">
+      <CardContent className="pt-0">
+        <form onSubmit={handleSubmit} className="mt-2 mb-4">
           <div className="flex gap-2">
             <Input
               type="text"
@@ -47,7 +47,7 @@ export function ProjectList({
             <Button type="submit">Add</Button>
           </div>
         </form>
-        <ul className="space-y-2">
+        <ul className="space-y-2 pb-2">
           {projects.map((project) => (
             <li
               key={project.id}

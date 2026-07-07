@@ -28,11 +28,11 @@ export function SessionList({ sessions, tasks, projects, onDeleteSession }: Sess
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Time Sessions</CardTitle>
+      <CardHeader className="pb-4">
+        <CardTitle className="leading-normal tracking-normal">Time Sessions</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
+        <div className="space-y-4 pb-2">
           {sessions.map((session) => (
             <div key={session.id} className="rounded-md border p-4 dark:border-gray-700">
               <div className="flex justify-between items-start">

@@ -106,19 +106,19 @@ export function TaskList({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Tasks</CardTitle>
+      <CardHeader className="pb-4">
+        <CardTitle className="leading-normal tracking-normal">Tasks</CardTitle>
       </CardHeader>
       <CardContent>
         {selectedProjectId ? (
-          <form onSubmit={handleSubmit} className="mb-4">
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-4">
+          <form onSubmit={handleSubmit} className="mt-2 mb-6">
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-[1fr_180px_180px_auto]">
               <Input
                 type="text"
                 value={newTaskName}
                 onChange={(e) => setNewTaskName(e.target.value)}
                 placeholder="New task name"
-                className="sm:col-span-2"
+                className="w-full"
               />
 
               <select
@@ -141,7 +141,7 @@ export function TaskList({
                 <option value="high">High</option>
               </select>
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full lg:w-auto">
                 Add
               </Button>
             </div>
@@ -207,7 +207,7 @@ export function TaskList({
           </div>
         )}
 
-        <ul className="space-y-2">
+        <ul className="space-y-2 pb-2">
           {filteredTasks.map((task) => {
             const today = new Date();
             today.setHours(0, 0, 0, 0);

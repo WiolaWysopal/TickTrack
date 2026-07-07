@@ -389,7 +389,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Top ad with proper spacing */}
         <div className="mb-8 -mt-4">
           <AdSense position="top" />
@@ -423,7 +423,7 @@ function App() {
           sessions={sessions}
           selectedProjectId={selectedProjectId}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-[320px_1fr]">
           <ProjectList
             projects={projects}
             onAddProject={handleAddProject}
