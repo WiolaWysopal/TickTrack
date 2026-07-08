@@ -381,15 +381,17 @@ function App() {
   const selectedProject = taskProjectId ? projects.find((p) => p.id === taskProjectId) : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-dvh overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-900 dark:from-gray-950 dark:via-slate-950 dark:to-indigo-950 dark:text-gray-100">
+      <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
         {/* Top ad with proper spacing */}
         <div className="mb-8 -mt-4">
           <AdSense position="top" />
         </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">TickTrack</h1>
+        <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-white/60 bg-white/75 p-4 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/70 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-300 dark:to-indigo-300">
+            TickTrack
+          </h1>
           <div className="flex space-x-2">
             <ThemeToggle theme={theme} onToggleTheme={handleToggleTheme} />
             <button

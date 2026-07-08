@@ -30,11 +30,11 @@ export function ProjectList({
   };
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="border-white/60 bg-white/80 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/70">
+      <CardHeader className="px-6 pt-6 pb-4">
         <CardTitle>Projects</CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="px-6 pb-6 pt-0">
         <form onSubmit={handleSubmit} className="mt-2 mb-4">
           <div className="flex gap-2">
             <Input

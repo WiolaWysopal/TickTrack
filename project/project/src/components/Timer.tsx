@@ -77,10 +77,8 @@ export function Timer({ projectName, taskName, onSaveSession }: TimerProps) {
 
   return (
     <div
-      className={`fixed rounded-lg bg-white p-6 shadow-md transition-all duration-300 ease-in-out dark:bg-gray-900 dark:text-gray-100 md:relative z-50 ${
-        isRunning
-          ? 'bottom-0 left-0 right-0 md:bottom-auto'
-          : 'bottom-0 left-0 right-0 md:bottom-auto'
+      className={`fixed inset-x-4 bottom-4 z-50 rounded-2xl border border-white/60 bg-white/90 p-6 shadow-2xl backdrop-blur transition-all duration-300 ease-in-out dark:border-white/10 dark:bg-gray-900/90 dark:text-gray-100 md:relative md:inset-auto md:bottom-auto ${
+        isRunning ? '' : ''
       }`}
     >
       <div className="mb-4">

@@ -105,11 +105,11 @@ export function TaskList({
     });
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
+    <Card className="border-white/60 bg-white/80 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/70">
+      <CardHeader className="px-6 pt-6 pb-4">
         <CardTitle className="leading-normal tracking-normal">Tasks</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-6 pb-6 pt-0">
         {selectedProjectId ? (
           <form onSubmit={handleSubmit} className="mt-2 mb-6">
             <div className="grid grid-cols-1 gap-2 lg:grid-cols-[1fr_180px_180px_auto]">

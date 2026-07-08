@@ -27,11 +27,11 @@ export function SessionList({ sessions, tasks, projects, onDeleteSession }: Sess
   };
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
+    <Card className="border-white/60 bg-white/80 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/70">
+      <CardHeader className="px-6 pt-6 pb-4">
         <CardTitle className="leading-normal tracking-normal">Time Sessions</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-6 pb-6 pt-0">
         <div className="space-y-4 pb-2">
           {sessions.map((session) => (
             <div key={session.id} className="rounded-md border p-4 dark:border-gray-700">
@@ -62,7 +62,7 @@ export function SessionList({ sessions, tasks, projects, onDeleteSession }: Sess
             </div>
           ))}
           {sessions.length === 0 && (
-            <p className="text-gray-500 dark:text-gray-400 text-center py-4">
+            <p className="py-8 text-center text-gray-500 dark:text-gray-400">
               No time sessions recorded yet
             </p>
           )}
