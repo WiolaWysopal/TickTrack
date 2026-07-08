@@ -373,14 +373,7 @@ function App() {
   }
 
   if (!user) {
-    return (
-      <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-950">
-        <div className="flex-grow">
-          <Auth />
-        </div>
-        <AdSense position="bottom" className="mt-auto" />
-      </div>
-    );
+    return <Auth />;
   }
 
   const selectedTask = selectedTaskId ? tasks.find((t) => t.id === selectedTaskId) : null;

@@ -23,7 +23,7 @@
 
   color-scheme: light;
   color: #213547;
-  background-color: #ffffff;
+  background-color: #020617;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -31,10 +31,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background-color: #020617;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* Ad container styles */
@@ -51,6 +59,24 @@ body {
 /* Shadow for bottom ad */
 .shadow-up {
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100dvh;
+  background-color: #020617;
 }
 
 /* Add padding to bottom of content on mobile to prevent ad overlap */
