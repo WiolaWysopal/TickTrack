@@ -14,6 +14,20 @@ import { Dashboard } from './components/Dashboard';
 import { ThemeToggle } from './components/ThemeToggle';
 import { applyTheme, getInitialTheme, type Theme } from './lib/theme';
 
+import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -24,7 +38,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
@@ -61,7 +74,6 @@ function App() {
       setShowDeleteConfirm(false);
       setShowPasswordInput(false);
       setPassword('');
-      setDeleteError(null);
       setDeleteLoading(false);
     });
 
@@ -140,6 +152,9 @@ function App() {
 
     if (!error && data) {
       setProjects((prev) => [...prev, data]);
+      toast.success('Project added');
+    } else {
+      toast.error('Failed to add project');
     }
   };
 
@@ -148,10 +163,14 @@ function App() {
 
     if (!error) {
       setProjects((prev) => prev.filter((project) => project.id !== projectId));
+      toast.success('Project deleted');
+
       if (selectedProjectId === projectId) {
         setSelectedProjectId(null);
         setSelectedTaskId(null);
       }
+    } else {
+      toast.error('Failed to delete project');
     }
   };
 
@@ -186,6 +205,9 @@ function App() {
 
     if (!error && data) {
       setTasks((prev) => [...prev, data]);
+      toast.success('Task added');
+    } else {
+      toast.error('Failed to add task');
     }
   };
 
@@ -194,9 +216,13 @@ function App() {
 
     if (!error) {
       setTasks((prev) => prev.filter((task) => task.id !== taskId));
+      toast.success('Task deleted');
+
       if (selectedTaskId === taskId) {
         setSelectedTaskId(null);
       }
+    } else {
+      toast.error('Failed to delete task');
     }
   };
 
@@ -230,6 +256,9 @@ function App() {
 
       if (!error && data) {
         setSessions((prev) => [data, ...prev]);
+        toast.success('Session saved');
+      } else {
+        toast.error('Failed to save session');
       }
     }
   };
@@ -239,6 +268,9 @@ function App() {
 
     if (!error) {
       setSessions((prev) => prev.filter((session) => session.id !== sessionId));
+      toast.success('Session deleted');
+    } else {
+      toast.error('Failed to delete session');
     }
   };
 
@@ -277,12 +309,10 @@ function App() {
     }
 
     if (!password) {
-      setDeleteError('Password is required to delete your account');
+      toast.error('Password is required to delete your account');
       return;
     }
-
     setDeleteLoading(true);
-    setDeleteError(null);
 
     try {
       // First verify the password by attempting to sign in
@@ -321,7 +351,7 @@ function App() {
       // Sign out after successful deletion
       await handleSignOut();
     } catch (error) {
-      setDeleteError(error instanceof Error ? error.message : 'An unknown error occurred');
+      toast.error(error instanceof Error ? error.message : 'An unknown error occurred');
       setShowPasswordInput(false);
     } finally {
       setDeleteLoading(false);
@@ -354,6 +384,9 @@ function App() {
 
     if (!error && data) {
       setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
+      toast.success('Task updated');
+    } else {
+      toast.error('Failed to update task');
     }
   };
 
@@ -361,7 +394,6 @@ function App() {
     setShowDeleteConfirm(false);
     setShowPasswordInput(false);
     setPassword('');
-    setDeleteError(null);
   };
 
   if (loading) {
@@ -373,14 +405,7 @@ function App() {
   }
 
   if (!user) {
-    return (
-      <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-950">
-        <div className="flex-grow">
-          <Auth />
-        </div>
-        <AdSense position="bottom" className="mt-auto" />
-      </div>
-    );
+    return <Auth />;
   }
 
   const selectedTask = selectedTaskId ? tasks.find((t) => t.id === selectedTaskId) : null;
@@ -388,15 +413,17 @@ function App() {
   const selectedProject = taskProjectId ? projects.find((p) => p.id === taskProjectId) : null;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-dvh overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-900 dark:from-gray-950 dark:via-slate-950 dark:to-indigo-950 dark:text-gray-100">
+      <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
         {/* Top ad with proper spacing */}
         <div className="mb-8 -mt-4">
           <AdSense position="top" />
         </div>
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">TickTrack</h1>
+        <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-white/60 bg-white/75 p-4 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/70 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-300 dark:to-indigo-300">
+            TickTrack
+          </h1>
           <div className="flex space-x-2">
             <ThemeToggle theme={theme} onToggleTheme={handleToggleTheme} />
             <button
@@ -423,7 +450,7 @@ function App() {
           sessions={sessions}
           selectedProjectId={selectedProjectId}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-[320px_1fr]">
           <ProjectList
             projects={projects}
             onAddProject={handleAddProject}
@@ -467,58 +494,57 @@ function App() {
       </div>
 
       {/* Delete Account Confirmation Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-            <h3 className="text-xl font-bold mb-4">Delete Account</h3>
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="mx-4 max-w-md rounded-2xl border border-white/10 bg-white p-6 text-gray-900 shadow-2xl dark:bg-gray-950 dark:text-gray-100">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">
+              Delete Account
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm leading-6 text-gray-600 dark:text-gray-300">
+              {!showPasswordInput
+                ? 'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.'
+                : 'To confirm account deletion, please enter your password.'}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
 
-            {!showPasswordInput ? (
-              <p className="mb-6">
-                Are you sure you want to delete your account? This action cannot be undone and will
-                permanently delete all your data.
-              </p>
-            ) : (
-              <div className="mb-6">
-                <p className="mb-4">To confirm account deletion, please enter your password:</p>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full rounded-md border px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-                />
-              </div>
-            )}
+          {showPasswordInput && (
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              className="mt-2 bg-white dark:bg-gray-900"
+            />
+          )}
 
-            {deleteError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                {deleteError}
-              </div>
-            )}
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={resetDeleteAccountStates}
+              disabled={deleteLoading}
+              className="border-gray-300 bg-white text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
+            >
+              Cancel
+            </AlertDialogCancel>
 
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={resetDeleteAccountStates}
-                className="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
-                disabled={deleteLoading}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteAccount}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                disabled={deleteLoading}
-              >
-                {deleteLoading
-                  ? 'Deleting...'
-                  : showPasswordInput
-                    ? 'Confirm Delete'
-                    : 'Delete Account'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+                handleDeleteAccount();
+              }}
+              disabled={deleteLoading}
+              className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-600"
+            >
+              {deleteLoading
+                ? 'Deleting...'
+                : showPasswordInput
+                  ? 'Confirm Delete'
+                  : 'Delete Account'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Toaster richColors position="top-right" />
     </div>
   );
 }

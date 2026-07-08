@@ -1,5 +1,6 @@
 import type { Project, Task, TimeSession } from '../types';
 import { ProductivityCharts } from './ProductivityCharts';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface DashboardProps {
   projects: Project[];
@@ -157,25 +158,26 @@ export function Dashboard({ projects, tasks, sessions, selectedProjectId }: Dash
   const cards = [...projectCards, ...selectedProjectCards];
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 rounded-2xl border border-white/60 bg-white/55 p-4 shadow-lg backdrop-blur dark:border-white/10 dark:bg-gray-900/45 sm:p-6">
       <h2 className="mb-4 text-2xl font-bold">Dashboard</h2>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
         {!hasSelectedProject && (
-          <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400 sm:col-span-2 md:col-span-4">
             Select a project to view task statistics.
           </p>
         )}
 
         {cards.map((card) => (
-          <div
+          <Card
             key={card.title}
-            className="rounded-lg bg-white p-5 shadow-md dark:bg-gray-900 dark:text-gray-100"
+            className="border-white/60 bg-white/80 shadow-md backdrop-blur dark:border-white/10 dark:bg-gray-900/70"
           >
-            <p className="text-sm text-gray-500 dark:text-gray-400">{card.title}</p>
-
-            <p className="mt-2 text-2xl font-bold">{card.value}</p>
-          </div>
+            <CardContent className="p-5">
+              <p className="text-sm text-muted-foreground">{card.title}</p>
+              <p className="mt-2 text-2xl font-bold">{card.value}</p>
+            </CardContent>
+          </Card>
         ))}
       </div>
 
