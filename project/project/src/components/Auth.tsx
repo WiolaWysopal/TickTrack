@@ -170,24 +170,24 @@ export function Auth() {
       <div className="absolute bottom-[-120px] right-[-120px] h-72 w-72 rounded-full bg-purple-400/30 blur-3xl dark:bg-purple-600/20" />
 
       <main className="relative z-10 mx-auto flex min-h-dvh max-w-6xl flex-col items-center justify-center gap-10 px-4 pb-8 pt-20 lg:py-8 lg:flex-row lg:px-8">
-        <section className="max-w-xl text-center lg:text-left">
+        <section className="w-full max-w-xl text-center lg:text-left">
           <div className="mb-4 inline-flex rounded-full border border-blue-200 bg-white/70 px-4 py-2 text-sm font-medium text-blue-700 shadow-sm backdrop-blur dark:border-blue-800 dark:bg-slate-900/70 dark:text-blue-300">
             ⏱ Simple time tracking for focused work
           </div>
 
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
-            Track your tasks.
-            <span className="block bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-[clamp(2.6rem,11vw,4.5rem)] font-extrabold leading-[1.12] tracking-tight">
+            <span className="block">Track your tasks.</span>
+            <span className="block pb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Own your time.
             </span>
           </h1>
 
-          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
+          <p className="mx-auto mt-6 max-w-lg text-base leading-7 text-slate-600 dark:text-slate-300 sm:text-lg sm:leading-8 lg:mx-0">
             TickTrack helps you manage projects, measure work sessions, attach PDFs and stay focused
             without unnecessary complexity.
           </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 grid w-full gap-4 sm:grid-cols-3">
             <div className="rounded-2xl border bg-white/70 p-4 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-900/70">
               <p className="text-2xl">✅</p>
               <p className="mt-2 font-semibold">Tasks</p>
