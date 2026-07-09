@@ -4,7 +4,7 @@
 
 ## 💡 Why TickTrack?
 
-TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking, document storage and a customizable light/dark user interface inside a modern Progressive Web App powered by Supabase.
+TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking, document storage, customizable user profiles and a modern light/dark interface inside a Progressive Web App powered by Supabase.
 
 The application demonstrates practical usage of React, TypeScript, Supabase Authentication, PostgreSQL, Storage, Row Level Security (RLS) and Progressive Web App technologies.
 
@@ -50,16 +50,14 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 🔒 Private storage per authenticated user
 * ☁️ Files stored in Supabase Storage
 
-### Authentication
+### Authentication & User Profile
 
 * 🔐 Email authentication with Supabase
 * 👤 User-specific projects and tasks
-
-### Progressive Web App
-
-* 📦 Installable
-* 📱 Mobile-friendly
-* 🌙 Offline support
+* 🖼️ Custom user avatar
+* ✏️ Editable display name
+* 🔑 Secure password change
+* ☁️ Avatar storage in Supabase Storage
 
 ### Appearance
 
@@ -67,6 +65,15 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 💾 Theme preference saved in localStorage
 * 🖥️ Automatic system theme detection
 * 🎨 Consistent theme across the entire application
+* ✨ Modern UI built with shadcn/ui
+* 🔔 Toast notifications using Sonner
+* 📱 Responsive layout improvements
+
+### Progressive Web App
+
+* 📦 Installable
+* 📱 Mobile-friendly
+* 🌙 Offline support
 
 ## 🛠️ Tech Stack
 
@@ -77,10 +84,13 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * `Bolt.new` – initial project scaffold and selected UI components
 * `Vite` – as the frontend build tool
 * `PWA` – installable app experience with offline support
-* `Supabase` – backend-as-a-service (authentication + database)
+* `Supabase` – Authentication, PostgreSQL and Storage
 * `Node.js` / `npm` – dependency and script management
 * `Cloudflare` – domain management with DNS, SSL and performance optimizations
 * `Recharts` – chart library used for dashboard productivity visualizations
+* `shadcn/ui` – reusable UI component library
+* `Radix UI` – accessible component primitives
+* `Sonner` – toast notifications
 
 ## 🤖 Project Origin
 
@@ -98,6 +108,16 @@ From the authentication system onwards, the application has been developed indep
 * Timer functionality
 * Responsive UI improvements
 * Bug fixes and further feature development
+
+Further development included:
+
+* complete UI redesign using shadcn/ui
+* responsive landing page
+* modern dialog system
+* toast notifications
+* user profile management
+* avatar upload
+* password management
 
 ## 🤖 AI-Assisted Development
 
@@ -183,6 +203,17 @@ The frontend communicates directly with Supabase using the official JavaScript S
 ```
 src/
 ├── components/
+│   ├── ui/
+│   │   ├── alert-dialog.tsx
+│   |   ├── badge.tsx
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── dialog.tsx
+│   │   ├── input.tsx
+│   │   ├── select.tsx
+│   │   ├── sonner.tsx
+│   │   └── textarea.tsx
+│   │
 │   ├── AdSense.tsx
 │   ├── AdSenseVerification.tsx
 │   ├── Auth.tsx
@@ -191,6 +222,7 @@ src/
 │   ├── PdfUpload.tsx
 │   ├── PriorityBadge.tsx
 │   ├── ProductivityCharts.tsx
+│   ├── ProfileDialog.tsx
 │   ├── ProjectList.tsx
 │   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
@@ -251,6 +283,16 @@ Responsible for:
 * validating uploaded files
 * uploading files to Supabase Storage
 * displaying upload status
+
+### ProfileDialog
+
+Responsible for:
+
+* managing user profile
+* uploading and removing avatars
+* changing display name
+* changing account password
+* synchronizing profile data with Supabase
 
 ### TaskFilesList
 
@@ -335,6 +377,9 @@ TickTrack protects user data using several Supabase security features:
 * maximum upload size validation
 * sanitized file paths for secure storage
 * user-specific task isolation
+* secure password updates
+* avatar ownership validation
+* protected avatar storage
 
 ## 🌐 Deployment
 
@@ -375,6 +420,13 @@ Implemented improvements include:
 * persistent user theme preferences
 * system color scheme detection
 * reusable theme toggle component
+* shadcn/ui component architecture
+* reusable dialog components
+* reusable toast notifications
+* path aliases for cleaner imports
+* improved responsive layouts
+* reusable profile management component
+* image upload validation
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -382,10 +434,12 @@ These improvements increase maintainability, readability and long-term scalabili
 
 Before running the project locally, make sure you have:
 
-* Node.js 20+
-* npm 10+
+* `Node.js` 20+
+* `npm` 10+
 * a Supabase project
 * Supabase Storage bucket named `task-files`
+* Supabase Storage bucket named `avatars`
+* configured `RLS` policies for Storage buckets
 
 ## 📦 Installation
 
@@ -443,6 +497,18 @@ TickTrack stores application data in a Supabase PostgreSQL database. The applica
 
 ### Main tables
 
+#### `profiles` 
+
+Stores additional user profile information.
+
+Fields include:
+
+* user id
+* display name
+* public avatar URL stored in Supabase Storage
+* created_at
+* updated_at
+
 #### `projects` 
 
 Stores user-created projects.
@@ -462,8 +528,8 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,   `in_progress`,   `done`)
-* priority (`low`,   `medium`,   `high`)
+* status (`todo`,     `in_progress`,     `done`)
+* priority (`low`,     `medium`,     `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
@@ -513,6 +579,7 @@ The database uses foreign keys to maintain relationships between entities:
 * one project can contain multiple tasks
 * one task can have multiple time sessions
 * one task can have multiple attached PDF files
+* one profile can reference one avatar stored in Supabase Storage
 
 ## 🕒 Optional: Keeping Supabase Awake (CRON, GitHub Actions)
 
@@ -552,7 +619,7 @@ jobs:
 
 ## 🖼️ Favicon
 
-The application’s avatar (favicon) was generated using `Craiyon` , an AI-powered tool that creates images based on short text prompts. `Craiyon` uses generative models to produce graphics in various styles, making it easy to generate simple illustrations, icons, or visual concepts. The image used in this project was created specifically for the application and does not depict any real persons or objects.
+The application icon ( `favicon` ) was generated using `Craiyon` , an AI-powered tool that creates images based on short text prompts. `Craiyon` uses generative models to produce graphics in various styles, making it easy to generate simple illustrations, icons, or visual concepts. The image used in this project was created specifically for the application and does not depict any real persons or objects.
 
 ## 🚧 Future Improvements
 
@@ -564,7 +631,8 @@ Planned features include:
 * Kanban board based on task statuses
 * custom task statuses
 * task reminders and notifications
-* calendar integration
+* avatar cropping before upload
+* profile preferences
 * export to PDF
 * team collaboration
 
