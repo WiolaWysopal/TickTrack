@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
-import { ImagePlus, Save, Trash2, UserCircle } from 'lucide-react';
+import { ImagePlus, KeyRound, Save, Trash2, UserCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { supabase } from '../lib/supabase';
@@ -36,6 +36,11 @@ export function ProfileDialog({ user }: ProfileDialogProps) {
   const [saving, setSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarDeleting, setAvatarDeleting] = useState(false);
+
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordUpdating, setPasswordUpdating] = useState(false);
 
   const avatarUrl = profile?.avatar_url;
 
@@ -189,6 +194,56 @@ export function ProfileDialog({ user }: ProfileDialogProps) {
     }
   };
 
+  const handlePasswordUpdate = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error('Please fill in all password fields');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast.error('New password must be at least 6 characters long');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+
+    setPasswordUpdating(true);
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email || '',
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        throw new Error('Current password is incorrect');
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+
+      toast.success('Password updated');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update password');
+    } finally {
+      setPasswordUpdating(false);
+    }
+  };
+
+  const profileTitle = profile?.display_name?.trim() || 'User Profile';
+
   const formattedCreatedAt = user.created_at
     ? new Intl.DateTimeFormat('en', {
         year: 'numeric',
@@ -213,7 +268,9 @@ export function ProfileDialog({ user }: ProfileDialogProps) {
             )}
           </span>
 
-          <span className="hidden md:inline">Profile</span>
+          <span className="hidden max-w-[120px] truncate md:inline">
+            {profile?.display_name?.trim() || 'Profile'}
+          </span>
         </Button>
       </DialogTrigger>
 
@@ -229,12 +286,12 @@ export function ProfileDialog({ user }: ProfileDialogProps) {
             </div>
 
             <div>
-              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                User Profile
+              <DialogTitle className="break-words text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {profileTitle}
               </DialogTitle>
 
               <DialogDescription className="text-sm leading-6 text-gray-600 dark:text-gray-300">
-                Manage your basic TickTrack profile information.
+                Manage your TickTrack profile and account settings.
               </DialogDescription>
             </div>
           </div>
@@ -315,6 +372,55 @@ export function ProfileDialog({ user }: ProfileDialogProps) {
             <p className="mt-1 break-all text-sm font-medium text-gray-900 dark:text-gray-100">
               {user.email}
             </p>
+          </div>
+
+          <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-4 dark:border-gray-800 dark:bg-gray-900/70">
+            <div className="mb-3 flex items-center gap-2">
+              <KeyRound className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                Password
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Input
+                type="password"
+                value={currentPassword}
+                onChange={(event) => setCurrentPassword(event.target.value)}
+                placeholder="Current password"
+                disabled={passwordUpdating}
+                className="bg-white dark:bg-gray-950"
+              />
+
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+                placeholder="New password"
+                disabled={passwordUpdating}
+                className="bg-white dark:bg-gray-950"
+              />
+
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder="Confirm new password"
+                disabled={passwordUpdating}
+                className="bg-white dark:bg-gray-950"
+              />
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handlePasswordUpdate}
+                disabled={passwordUpdating || !currentPassword || !newPassword || !confirmPassword}
+                className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100 dark:hover:bg-gray-800"
+              >
+                <KeyRound className="mr-2 h-4 w-4" />
+                {passwordUpdating ? 'Updating password...' : 'Change password'}
+              </Button>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-gray-200 bg-gray-50/80 p-4 dark:border-gray-800 dark:bg-gray-900/70">
