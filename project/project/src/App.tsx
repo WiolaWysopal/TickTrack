@@ -5,6 +5,7 @@ import { TaskList } from './components/TaskList';
 import { SessionList } from './components/SessionList';
 import { Auth } from './components/Auth';
 import { AdSense } from './components/AdSense';
+import { ProfileDialog } from './components/ProfileDialog';
 import { supabase, clearAuthData } from './lib/supabase';
 import type { Project, Task, TimeSession } from './types';
 import type { User } from '@supabase/supabase-js';
@@ -424,7 +425,9 @@ function App() {
           <h1 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-3xl font-bold text-transparent dark:from-blue-300 dark:to-indigo-300">
             TickTrack
           </h1>
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
+            <ProfileDialog user={user} />
+
             <ThemeToggle theme={theme} onToggleTheme={handleToggleTheme} />
             <button
               onClick={() => setShowDeleteConfirm(true)}
