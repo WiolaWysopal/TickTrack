@@ -45,6 +45,8 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 ### File Management
 
 * 📄 Upload PDF files directly to tasks
+* 🖱️ Drag & drop PDF upload
+* 👀 Built-in PDF preview
 * 📥 Download uploaded files
 * 🗑️ Delete attached files
 * 🔒 Private storage per authenticated user
@@ -88,6 +90,7 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * `Node.js` / `npm` – dependency and script management
 * `Cloudflare` – domain management with DNS, SSL and performance optimizations
 * `Recharts` – chart library used for dashboard productivity visualizations
+* `PDF.js` – in-app PDF preview rendering
 * `shadcn/ui` – reusable UI component library
 * `Radix UI` – accessible component primitives
 * `Sonner` – toast notifications
@@ -280,6 +283,7 @@ Responsible for:
 Responsible for:
 
 * selecting PDF files
+* drag & drop uploads
 * validating uploaded files
 * uploading files to Supabase Storage
 * displaying upload status
@@ -300,6 +304,7 @@ Responsible for:
 
 * fetching uploaded files
 * displaying task attachments
+* previewing PDF files
 * downloading files
 * deleting uploaded documents
 
@@ -354,6 +359,8 @@ Each uploaded document is:
 * safe file name sanitization
 * color-coded success and error messages
 * automatic input reset after invalid file selection
+* drag & drop uploads
+* built-in PDF preview
 
 ### Storage structure
 
@@ -528,8 +535,8 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,     `in_progress`,     `done`)
-* priority (`low`,     `medium`,     `high`)
+* status (`todo`,      `in_progress`,      `done`)
+* priority (`low`,      `medium`,      `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
@@ -626,7 +633,6 @@ The application icon ( `favicon` ) was generated using `Craiyon` , an AI-powered
 Planned features include:
 
 * support for additional file types
-* drag & drop uploads
 * task comments
 * Kanban board based on task statuses
 * custom task statuses
