@@ -17,6 +17,7 @@
       form-action 'self';
       frame-ancestors 'none';
       upgrade-insecure-requests;
+      object-src 'none';
     """
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Cross-Origin-Opener-Policy = "same-origin-allow-popups"
