@@ -52,6 +52,15 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 🔒 Private storage per authenticated user
 * ☁️ Files stored in Supabase Storage
 
+### Calendar
+
+* 📅 Monthly calendar view for task deadlines
+* 📌 Display tasks assigned to each day
+* 🔴 Highlight overdue tasks
+* ✅ Visual indicators for completed tasks
+* 🖱️ Click a day to view scheduled tasks
+* ✏️ Update task status and priority directly from the calendar
+
 ### Authentication & User Profile
 
 * 🔐 Email authentication with Supabase
@@ -535,8 +544,8 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,      `in_progress`,      `done`)
-* priority (`low`,      `medium`,      `high`)
+* status (`todo`,       `in_progress`,       `done`)
+* priority (`low`,       `medium`,       `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)

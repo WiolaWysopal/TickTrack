@@ -6,6 +6,7 @@ import { SessionList } from './components/SessionList';
 import { Auth } from './components/Auth';
 import { AdSense } from './components/AdSense';
 import { ProfileDialog } from './components/ProfileDialog';
+import { CalendarView } from './components/CalendarView';
 import { supabase, clearAuthData } from './lib/supabase';
 import type { Project, Task, TimeSession } from './types';
 import type { User } from '@supabase/supabase-js';
@@ -42,6 +43,7 @@ function App() {
   const [password, setPassword] = useState('');
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
+  const [activeView, setActiveView] = useState<'dashboard' | 'calendar'>('dashboard');
 
   const navigate = useNavigate();
 
@@ -447,12 +449,46 @@ function App() {
             </button>
           </div>
         </div>
-        <Dashboard
-          projects={projects}
-          tasks={tasks}
-          sessions={sessions}
-          selectedProjectId={selectedProjectId}
-        />
+        <div className="mb-6 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveView('dashboard')}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+              activeView === 'dashboard'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white/80 text-gray-700 hover:bg-white dark:bg-gray-900/70 dark:text-gray-200 dark:hover:bg-gray-800'
+            }`}
+          >
+            Dashboard
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveView('calendar')}
+            className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+              activeView === 'calendar'
+                ? 'bg-blue-600 text-white'
+                : 'bg-white/80 text-gray-700 hover:bg-white dark:bg-gray-900/70 dark:text-gray-200 dark:hover:bg-gray-800'
+            }`}
+          >
+            Calendar
+          </button>
+        </div>
+        {activeView === 'dashboard' ? (
+          <Dashboard
+            projects={projects}
+            tasks={tasks}
+            sessions={sessions}
+            selectedProjectId={selectedProjectId}
+          />
+        ) : (
+          <CalendarView
+            tasks={tasks}
+            selectedProjectId={selectedProjectId}
+            onSelectTask={setSelectedTaskId}
+            onUpdateTask={handleUpdateTask}
+          />
+        )}
         <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-[320px_1fr]">
           <ProjectList
             projects={projects}
