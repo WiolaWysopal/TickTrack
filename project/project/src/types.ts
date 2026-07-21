@@ -7,11 +7,13 @@ export interface Task {
   description: string | null;
   due_date: string | null;
   completed_at: string | null;
+  is_favorite: boolean;
 }
 
 export interface Project {
   id: string;
   name: string;
+  is_favorite: boolean;
 }
 
 export interface TimeSession {
