@@ -14,12 +14,15 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 
 * ✅ Create and delete tasks
 * 📂 Organize tasks into projects
+* ⭐ Mark favorite projects
+* ⭐ Mark favorite tasks
 * 📝 Add task descriptions
 * 📅 Assign due dates to tasks
 * 🚦 Assign task statuses (To Do, In Progress, Done)
 * 🎯 Assign task priorities (Low, Medium, High)
 * ✏️ Update task status and priority directly from the task list
 * 🔍 Filter tasks by status and priority
+* 🔍 Quickly filter favorite projects and tasks
 * 📊 Sort tasks by name, status and priority
 
 ### Time Tracking
@@ -307,6 +310,17 @@ Responsible for:
 * changing account password
 * synchronizing profile data with Supabase
 
+### ProjectList
+
+Responsible for:
+
+* creating projects
+* displaying project list
+* selecting active projects
+* deleting projects
+* marking favorite projects
+* quick filtering favorite projects
+
 ### TaskFilesList
 
 Responsible for:
@@ -323,9 +337,11 @@ Responsible for:
 
 * creating tasks
 * assigning statuses and priorities
+* marking favorite tasks
 * adding task descriptions
 * assigning due dates
 * filtering and sorting tasks
+* quick filtering favorite tasks
 * managing attached files
 
 ### Timer
@@ -533,6 +549,7 @@ Fields include:
 
 * project name
 * owner (`user_id`)
+* favorite flag (`is_favorite`)
 * creation timestamp
 
 #### `tasks` 
@@ -544,8 +561,9 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,       `in_progress`,       `done`)
-* priority (`low`,       `medium`,       `high`)
+* status (`todo`,        `in_progress`,        `done`)
+* favorite flag (`is_favorite`)
+* priority (`low`,        `medium`,        `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)

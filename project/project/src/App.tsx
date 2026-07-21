@@ -149,6 +149,7 @@ function App() {
     const newProject = {
       name,
       user_id: user.id,
+      is_favorite: false,
     };
 
     const { data, error } = await supabase.from('projects').insert([newProject]).select().single();
@@ -177,6 +178,26 @@ function App() {
     }
   };
 
+  const handleToggleProjectFavorite = async (projectId: string, isFavorite: boolean) => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('projects')
+      .update({ is_favorite: isFavorite })
+      .eq('id', projectId)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setProjects((prev) => prev.map((project) => (project.id === projectId ? data : project)));
+
+      toast.success(isFavorite ? 'Project added to favorites' : 'Project removed from favorites');
+    } else {
+      toast.error('Failed to update favorite project');
+    }
+  };
+
   const handleAddTask = async ({
     name,
     projectId,
@@ -202,6 +223,7 @@ function App() {
       priority,
       description,
       due_date: dueDate,
+      is_favorite: false,
     };
 
     const { data, error } = await supabase.from('tasks').insert([newTask]).select().single();
@@ -226,6 +248,26 @@ function App() {
       }
     } else {
       toast.error('Failed to delete task');
+    }
+  };
+
+  const handleToggleTaskFavorite = async (taskId: string, isFavorite: boolean) => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .update({ is_favorite: isFavorite })
+      .eq('id', taskId)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (!error && data) {
+      setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
+
+      toast.success(isFavorite ? 'Task added to favorites' : 'Task removed from favorites');
+    } else {
+      toast.error('Failed to update favorite task');
     }
   };
 
@@ -495,6 +537,7 @@ function App() {
             onAddProject={handleAddProject}
             onSelectProject={setSelectedProjectId}
             onDeleteProject={handleDeleteProject}
+            onToggleFavorite={handleToggleProjectFavorite}
             selectedProjectId={selectedProjectId}
           />
           <TaskList
@@ -505,6 +548,7 @@ function App() {
             onDeleteTask={handleDeleteTask}
             selectedTaskId={selectedTaskId}
             onUpdateTask={handleUpdateTask}
+            onToggleFavorite={handleToggleTaskFavorite}
           />
         </div>
 

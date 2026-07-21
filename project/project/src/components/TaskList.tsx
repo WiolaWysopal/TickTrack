@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Star } from 'lucide-react';
 
 interface TaskListProps {
   tasks: Task[];
@@ -23,6 +24,7 @@ interface TaskListProps {
   }) => void;
   onSelectTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
+  onToggleFavorite: (taskId: string, isFavorite: boolean) => void;
   onUpdateTask: (
     taskId: string,
     updates: {
@@ -40,6 +42,7 @@ export function TaskList({
   onSelectTask,
   onDeleteTask,
   onUpdateTask,
+  onToggleFavorite,
 }: TaskListProps) {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('todo');
@@ -48,6 +51,7 @@ export function TaskList({
   const [newTaskDueDate, setNewTaskDueDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [priorityFilter, setPriorityFilter] = useState('all');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
   const [filesRefreshKey, setFilesRefreshKey] = useState(0);
 
@@ -72,10 +76,11 @@ export function TaskList({
     }
   };
 
-  const filteredTasks = tasks
+  const filteredTasks = [...tasks]
     .filter((task) => task.project_id === selectedProjectId)
     .filter((task) => statusFilter === 'all' || task.status === statusFilter)
     .filter((task) => priorityFilter === 'all' || task.priority === priorityFilter)
+    .filter((task) => !showFavoritesOnly || task.is_favorite)
     .sort((a, b) => {
       if (sortBy === 'name') {
         return a.name.localeCompare(b.name);
@@ -101,7 +106,7 @@ export function TaskList({
         return statusOrder[a.status] - statusOrder[b.status];
       }
 
-      return 0;
+      return Number(b.is_favorite) - Number(a.is_favorite);
     });
 
   return (
@@ -171,7 +176,7 @@ export function TaskList({
         )}
 
         {selectedProjectId && (
-          <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <div className="mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -182,6 +187,15 @@ export function TaskList({
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
             </select>
+
+            <Button
+              type="button"
+              variant={showFavoritesOnly ? 'default' : 'outline'}
+              onClick={() => setShowFavoritesOnly((current) => !current)}
+            >
+              <Star className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'fill-current' : ''}`} />
+              Favorites
+            </Button>
 
             <select
               value={priorityFilter}
@@ -233,6 +247,22 @@ export function TaskList({
                   </span>
 
                   <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onToggleFavorite(task.id, !task.is_favorite)}
+                      aria-label={
+                        task.is_favorite ? 'Remove task from favorites' : 'Add task to favorites'
+                      }
+                      title={task.is_favorite ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Star
+                        className={`h-5 w-5 ${
+                          task.is_favorite ? 'fill-yellow-400 text-yellow-500' : 'text-gray-400'
+                        }`}
+                      />
+                    </Button>
                     <StatusBadge
                       value={task.status}
                       onChange={(status) => onUpdateTask(task.id, { status })}
