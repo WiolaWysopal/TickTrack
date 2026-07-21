@@ -81,8 +81,10 @@ export function ProjectList({
             {visibleProjects.map((project) => (
               <li
                 key={project.id}
-                className={`rounded-md border p-3 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800 ${
-                  selectedProjectId === project.id ? 'border-blue-500' : ''
+                className={`rounded-md border p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                  selectedProjectId === project.id
+                    ? 'border-blue-500 bg-blue-50/70 ring-1 ring-blue-500/30 dark:border-blue-400 dark:bg-blue-950/40 dark:ring-blue-400/40'
+                    : 'border-gray-200 dark:border-gray-700'
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
