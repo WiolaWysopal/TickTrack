@@ -17,6 +17,8 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * ⭐ Mark favorite projects
 * ⭐ Mark favorite tasks
 * 📝 Add task descriptions
+* 💬 Add comments to tasks
+* 👤 Display comment authors with avatars
 * 📅 Assign due dates to tasks
 * 🚦 Assign task statuses (To Do, In Progress, Done)
 * 🎯 Assign task priorities (Low, Medium, High)
@@ -133,6 +135,7 @@ Further development included:
 * user profile management
 * avatar upload
 * password management
+* task comments
 
 ## 🤖 AI-Assisted Development
 
@@ -241,6 +244,7 @@ src/
 │   ├── ProjectList.tsx
 │   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
+│   ├── TaskComments.tsx
 │   ├── TaskList.tsx
 │   ├── ThemeToggle.tsx
 │   └── Timer.tsx
@@ -331,6 +335,16 @@ Responsible for:
 * downloading files
 * deleting uploaded documents
 
+### TaskComments
+
+Responsible for:
+
+* displaying task comments
+* creating new comments
+* deleting comments
+* displaying author names and avatars
+* synchronizing comments with Supabase
+
 ### TaskList
 
 Responsible for:
@@ -412,6 +426,8 @@ TickTrack protects user data using several Supabase security features:
 * secure password updates
 * avatar ownership validation
 * protected avatar storage
+* Row Level Security (`RLS`) for task comments
+* comment ownership validation
 
 ## 🌐 Deployment
 
@@ -459,6 +475,8 @@ Implemented improvements include:
 * improved responsive layouts
 * reusable profile management component
 * image upload validation
+* reusable task comments component
+* strongly typed comment models
 
 These improvements increase maintainability, readability and long-term scalability of the application.
 
@@ -561,13 +579,25 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,        `in_progress`,        `done`)
+* status (`todo`,         `in_progress`,         `done`)
 * favorite flag (`is_favorite`)
-* priority (`low`,        `medium`,        `high`)
+* priority (`low`,         `medium`,         `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
 * creation timestamp
+
+#### `task_comments` 
+
+Stores comments attached to tasks.
+
+Fields include:
+
+* related task (`task_id`)
+* author (`user_id`)
+* comment content
+* creation timestamp
+* update timestamp
 
 #### `time_sessions` 
 
@@ -613,6 +643,7 @@ The database uses foreign keys to maintain relationships between entities:
 * one project can contain multiple tasks
 * one task can have multiple time sessions
 * one task can have multiple attached PDF files
+* one task can have multiple comments
 * one profile can reference one avatar stored in Supabase Storage
 
 ## 🕒 Optional: Keeping Supabase Awake (CRON, GitHub Actions)
@@ -659,8 +690,8 @@ The application icon ( `favicon` ) was generated using `Craiyon` , an AI-powered
 
 Planned features include:
 
+* task activity history
 * support for additional file types
-* task comments
 * Kanban board based on task statuses
 * custom task statuses
 * task reminders and notifications
