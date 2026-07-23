@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { MessageSquare, Send, Trash2 } from 'lucide-react';
+import { MessageSquare, Send, Trash2, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { supabase } from '../lib/supabase';
@@ -10,6 +10,20 @@ import { Textarea } from '@/components/ui/textarea';
 
 interface TaskCommentsProps {
   taskId: string;
+}
+
+interface TaskCommentRow {
+  id: string;
+  task_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string | null;
+}
+
+interface ProfileNameRow {
+  id: string;
+  display_name: string | null;
 }
 
 const MAX_COMMENT_LENGTH = 2000;
@@ -28,6 +42,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
   const [comments, setComments] = useState<TaskComment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserDisplayName, setCurrentUserDisplayName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
@@ -35,20 +50,51 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
   const loadComments = useCallback(async () => {
     setLoading(true);
 
-    const { data, error } = await supabase
+    const { data: commentsData, error: commentsError } = await supabase
       .from('task_comments')
-      .select('*')
+      .select('id, task_id, user_id, content, created_at, updated_at')
       .eq('task_id', taskId)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Failed to load task comments:', error);
+    if (commentsError) {
+      console.error('Failed to load task comments:', commentsError);
       toast.error('Failed to load comments');
       setComments([]);
-    } else {
-      setComments((data ?? []) as TaskComment[]);
+      setLoading(false);
+      return;
     }
 
+    const commentRows = (commentsData ?? []) as TaskCommentRow[];
+
+    if (commentRows.length === 0) {
+      setComments([]);
+      setLoading(false);
+      return;
+    }
+
+    const authorIds = [...new Set(commentRows.map((comment) => comment.user_id))];
+
+    const { data: profilesData, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id, display_name')
+      .in('id', authorIds);
+
+    if (profilesError) {
+      console.error('Failed to load comment authors:', profilesError);
+    }
+
+    const profiles = (profilesData ?? []) as ProfileNameRow[];
+
+    const displayNamesByUserId = new Map(
+      profiles.map((profile) => [profile.id, profile.display_name])
+    );
+
+    const commentsWithAuthors: TaskComment[] = commentRows.map((comment) => ({
+      ...comment,
+      author_display_name: displayNamesByUserId.get(comment.user_id) ?? null,
+    }));
+
+    setComments(commentsWithAuthors);
     setLoading(false);
   }, [taskId]);
 
@@ -56,15 +102,35 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
     const loadCurrentUser = async () => {
       const {
         data: { user },
-        error,
+        error: userError,
       } = await supabase.auth.getUser();
 
-      if (error) {
-        console.error('Failed to load current user:', error);
+      if (userError) {
+        console.error('Failed to load current user:', userError);
         return;
       }
 
-      setCurrentUserId(user?.id ?? null);
+      const userId = user?.id ?? null;
+      setCurrentUserId(userId);
+
+      if (!userId) {
+        setCurrentUserDisplayName(null);
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', userId)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Failed to load current user profile:', profileError);
+        setCurrentUserDisplayName(null);
+        return;
+      }
+
+      setCurrentUserDisplayName(profile?.display_name ?? null);
     };
 
     loadCurrentUser();
@@ -100,14 +166,19 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
         user_id: currentUserId,
         content,
       })
-      .select()
+      .select('id, task_id, user_id, content, created_at, updated_at')
       .single();
 
     if (error) {
       console.error('Failed to add task comment:', error);
       toast.error('Failed to add comment');
     } else {
-      setComments((currentComments) => [data as TaskComment, ...currentComments]);
+      const addedComment: TaskComment = {
+        ...(data as TaskCommentRow),
+        author_display_name: currentUserDisplayName,
+      };
+
+      setComments((currentComments) => [addedComment, ...currentComments]);
       setNewComment('');
       toast.success('Comment added');
     }
@@ -193,6 +264,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
           {comments.map((comment) => {
             const canDelete = comment.user_id === currentUserId;
             const isDeleting = deletingCommentId === comment.id;
+            const authorName = comment.author_display_name?.trim() || 'TickTrack user';
 
             return (
               <li
@@ -200,15 +272,23 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
                 className="rounded-lg border border-gray-200 bg-white/70 p-4 dark:border-gray-700 dark:bg-gray-900/60"
               >
                 <div className="mb-3 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">You</p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
+                      <UserRound className="h-4 w-4" />
+                    </div>
 
-                    <time
-                      dateTime={comment.created_at}
-                      className="text-xs text-gray-500 dark:text-gray-400"
-                    >
-                      {formatCommentDate(comment.created_at)}
-                    </time>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                        {authorName}
+                      </p>
+
+                      <time
+                        dateTime={comment.created_at}
+                        className="text-xs text-gray-500 dark:text-gray-400"
+                      >
+                        {formatCommentDate(comment.created_at)}
+                      </time>
+                    </div>
                   </div>
 
                   {canDelete && (
