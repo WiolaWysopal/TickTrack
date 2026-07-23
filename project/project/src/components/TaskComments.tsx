@@ -21,9 +21,10 @@ interface TaskCommentRow {
   updated_at: string | null;
 }
 
-interface ProfileNameRow {
+interface ProfileDataRow {
   id: string;
   display_name: string | null;
+  avatar_url: string | null;
 }
 
 const MAX_COMMENT_LENGTH = 2000;
@@ -43,6 +44,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
   const [newComment, setNewComment] = useState('');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [currentUserDisplayName, setCurrentUserDisplayName] = useState<string | null>(null);
+  const [currentUserAvatarUrl, setCurrentUserAvatarUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
@@ -76,23 +78,26 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
 
     const { data: profilesData, error: profilesError } = await supabase
       .from('profiles')
-      .select('id, display_name')
+      .select('id, display_name, avatar_url')
       .in('id', authorIds);
 
     if (profilesError) {
       console.error('Failed to load comment authors:', profilesError);
     }
 
-    const profiles = (profilesData ?? []) as ProfileNameRow[];
+    const profiles = (profilesData ?? []) as ProfileDataRow[];
 
-    const displayNamesByUserId = new Map(
-      profiles.map((profile) => [profile.id, profile.display_name])
-    );
+    const profilesByUserId = new Map(profiles.map((profile) => [profile.id, profile]));
 
-    const commentsWithAuthors: TaskComment[] = commentRows.map((comment) => ({
-      ...comment,
-      author_display_name: displayNamesByUserId.get(comment.user_id) ?? null,
-    }));
+    const commentsWithAuthors: TaskComment[] = commentRows.map((comment) => {
+      const authorProfile = profilesByUserId.get(comment.user_id);
+
+      return {
+        ...comment,
+        author_display_name: authorProfile?.display_name ?? null,
+        author_avatar_url: authorProfile?.avatar_url ?? null,
+      };
+    });
 
     setComments(commentsWithAuthors);
     setLoading(false);
@@ -115,22 +120,25 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
 
       if (!userId) {
         setCurrentUserDisplayName(null);
+        setCurrentUserAvatarUrl(null);
         return;
       }
 
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
-        .select('display_name')
+        .select('display_name, avatar_url')
         .eq('id', userId)
         .maybeSingle();
 
       if (profileError) {
         console.error('Failed to load current user profile:', profileError);
         setCurrentUserDisplayName(null);
+        setCurrentUserAvatarUrl(null);
         return;
       }
 
       setCurrentUserDisplayName(profile?.display_name ?? null);
+      setCurrentUserAvatarUrl(profile?.avatar_url ?? null);
     };
 
     loadCurrentUser();
@@ -176,6 +184,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
       const addedComment: TaskComment = {
         ...(data as TaskCommentRow),
         author_display_name: currentUserDisplayName,
+        author_avatar_url: currentUserAvatarUrl,
       };
 
       setComments((currentComments) => [addedComment, ...currentComments]);
@@ -273,8 +282,17 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
               >
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
-                      <UserRound className="h-4 w-4" />
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
+                      {comment.author_avatar_url ? (
+                        <img
+                          src={comment.author_avatar_url}
+                          alt={`${authorName} avatar`}
+                          className="h-full w-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <UserRound className="h-4 w-4" />
+                      )}
                     </div>
 
                     <div>
