@@ -10,6 +10,15 @@ export interface Task {
   is_favorite: boolean;
 }
 
+export interface TaskComment {
+  id: string;
+  task_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string | null;
+}
+
 export interface Project {
   id: string;
   name: string;

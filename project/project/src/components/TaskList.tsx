@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
+import { TaskComments } from './TaskComments';
 
 interface TaskListProps {
   tasks: Task[];
@@ -295,13 +296,15 @@ export function TaskList({
                   </p>
                 )}
                 {selectedTaskId === task.id && (
-                  <div className="mt-4 border-t pt-4">
+                  <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-700">
                     <PdfUpload
                       taskId={task.id}
                       onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
                     />
 
                     <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
+
+                    <TaskComments taskId={task.id} />
                   </div>
                 )}
               </li>
