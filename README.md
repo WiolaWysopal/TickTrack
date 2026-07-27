@@ -26,6 +26,7 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * 🔍 Filter tasks by status and priority
 * 🔍 Quickly filter favorite projects and tasks
 * 📊 Sort tasks by name, status and priority
+* 📜 Task activity timeline
 
 ### Time Tracking
 
@@ -125,6 +126,7 @@ From the authentication system onwards, the application has been developed indep
 * Timer functionality
 * Responsive UI improvements
 * Bug fixes and further feature development
+* Task activity history
 
 Further development included:
 
@@ -245,13 +247,15 @@ src/
 │   ├── StatusBadge.tsx
 │   ├── TaskFilesList.tsx
 │   ├── TaskComments.tsx
+│   ├── TaskActivity.tsx
 │   ├── TaskList.tsx
 │   ├── ThemeToggle.tsx
 │   └── Timer.tsx
 │
 ├── lib/
 │   ├── directAuth.ts
-│   └── supabase.ts
+│   ├── supabase.ts
+│   ├── taskActivity.ts
 │   └── theme.ts
 │
 ├── App.css
@@ -324,6 +328,15 @@ Responsible for:
 * deleting projects
 * marking favorite projects
 * quick filtering favorite projects
+
+### TaskActivity
+
+Responsible for:
+
+* displaying task activity history
+* logging task changes
+* displaying comments, file and timer events
+* chronological activity timeline
 
 ### TaskFilesList
 
@@ -579,12 +592,25 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,         `in_progress`,         `done`)
+* status (`todo`,          `in_progress`,          `done`)
 * favorite flag (`is_favorite`)
-* priority (`low`,         `medium`,         `high`)
+* priority (`low`,          `medium`,          `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
+* creation timestamp
+
+#### `task_activity` 
+
+Stores the activity history for each task.
+
+Fields include:
+
+* related task (`task_id`)
+* author (`user_id`)
+* activity type
+* description
+* metadata (JSON)
 * creation timestamp
 
 #### `task_comments` 
@@ -690,7 +716,6 @@ The application icon ( `favicon` ) was generated using `Craiyon` , an AI-powered
 
 Planned features include:
 
-* task activity history
 * support for additional file types
 * Kanban board based on task statuses
 * custom task statuses
