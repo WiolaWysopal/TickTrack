@@ -517,6 +517,9 @@ function App() {
   const selectedTask = selectedTaskId ? tasks.find((t) => t.id === selectedTaskId) : null;
   const taskProjectId = selectedTask?.project_id;
   const selectedProject = taskProjectId ? projects.find((p) => p.id === taskProjectId) : null;
+  const handleActivityCreated = () => {
+    setActivityRefreshKey((current) => current + 1);
+  };
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-900 dark:from-gray-950 dark:via-slate-950 dark:to-indigo-950 dark:text-gray-100">
@@ -611,6 +614,7 @@ function App() {
             onUpdateTask={handleUpdateTask}
             onToggleFavorite={handleToggleTaskFavorite}
             activityRefreshKey={activityRefreshKey}
+            onActivityCreated={handleActivityCreated}
           />
         </div>
 

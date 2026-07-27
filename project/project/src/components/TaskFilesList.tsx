@@ -5,6 +5,7 @@ import type { PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 import { supabase } from '../lib/supabase';
+import { createTaskActivity } from '../lib/taskActivity';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -28,6 +29,7 @@ interface FileItem {
 interface TaskFilesListProps {
   taskId: string;
   refreshKey?: number;
+  onActivityCreated?: () => void;
 }
 
 interface PdfPageCanvasProps {
@@ -98,7 +100,11 @@ const PdfPageCanvas: React.FC<PdfPageCanvasProps> = ({ pdfDocument, pageNumber }
   );
 };
 
-const TaskFilesList: React.FC<TaskFilesListProps> = ({ taskId, refreshKey = 0 }) => {
+const TaskFilesList: React.FC<TaskFilesListProps> = ({
+  taskId,
+  refreshKey = 0,
+  onActivityCreated,
+}) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -219,7 +225,7 @@ const TaskFilesList: React.FC<TaskFilesListProps> = ({ taskId, refreshKey = 0 })
     window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const handleDelete = async (fileId: string, filePath: string) => {
+  const handleDelete = async (fileId: string, filePath: string, fileName: string) => {
     const confirmed = window.confirm('Are you sure you want to delete this file?');
 
     if (!confirmed) return;
@@ -242,6 +248,24 @@ const TaskFilesList: React.FC<TaskFilesListProps> = ({ taskId, refreshKey = 0 })
 
     if (previewFile?.id === fileId) {
       handleClosePreview();
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      await createTaskActivity({
+        taskId,
+        userId: user.id,
+        activityType: 'file_deleted',
+        description: 'PDF deleted',
+        metadata: {
+          file_name: fileName,
+        },
+      });
+
+      onActivityCreated?.();
     }
 
     await fetchFiles();
@@ -318,7 +342,7 @@ const TaskFilesList: React.FC<TaskFilesListProps> = ({ taskId, refreshKey = 0 })
                     type="button"
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(file.id, file.file_path)}
+                    onClick={() => handleDelete(file.id, file.file_path, file.file_name)}
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                     <span className="hidden md:inline">Delete</span>

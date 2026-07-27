@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { FileText, Upload, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { createTaskActivity } from '../lib/taskActivity';
 
 interface PdfUploadProps {
   taskId: string;
   onUploadSuccess?: () => void;
+  onActivityCreated?: () => void;
 }
 
 const MAX_FILE_SIZE_MB = 10;
@@ -30,7 +32,7 @@ const formatFileSize = (size: number) => {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
+const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess, onActivityCreated }) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -184,6 +186,17 @@ const PdfUpload: React.FC<PdfUploadProps> = ({ taskId, onUploadSuccess }) => {
         return;
       }
 
+      await createTaskActivity({
+        taskId,
+        userId: user.id,
+        activityType: 'file_uploaded',
+        description: 'PDF uploaded',
+        metadata: {
+          file_name: file.name,
+        },
+      });
+
+      onActivityCreated?.();
       setSuccess('File uploaded successfully.');
       clearSelectedFile();
       onUploadSuccess?.();
