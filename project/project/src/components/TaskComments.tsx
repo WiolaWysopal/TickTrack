@@ -3,6 +3,7 @@ import { MessageSquare, Send, Trash2, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { supabase } from '../lib/supabase';
+import { createTaskActivity } from '../lib/taskActivity';
 import type { TaskComment } from '../types';
 
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 
 interface TaskCommentsProps {
   taskId: string;
+  onActivityCreated?: () => void;
 }
 
 interface TaskCommentRow {
@@ -39,7 +41,7 @@ const formatCommentDate = (date: string) => {
   }).format(new Date(date));
 };
 
-export function TaskComments({ taskId }: TaskCommentsProps) {
+export function TaskComments({ taskId, onActivityCreated }: TaskCommentsProps) {
   const [comments, setComments] = useState<TaskComment[]>([]);
   const [newComment, setNewComment] = useState('');
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -188,6 +190,13 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
       };
 
       setComments((currentComments) => [addedComment, ...currentComments]);
+      await createTaskActivity({
+        taskId,
+        userId: currentUserId,
+        activityType: 'comment_added',
+        description: 'Comment added',
+      });
+      onActivityCreated?.();
       setNewComment('');
       toast.success('Comment added');
     }
@@ -208,6 +217,15 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
       console.error('Failed to delete task comment:', error);
       toast.error('Failed to delete comment');
     } else {
+      if (currentUserId) {
+        await createTaskActivity({
+          taskId,
+          userId: currentUserId,
+          activityType: 'comment_deleted',
+          description: 'Comment deleted',
+        });
+        onActivityCreated?.();
+      }
       setComments((currentComments) =>
         currentComments.filter((comment) => comment.id !== commentId)
       );

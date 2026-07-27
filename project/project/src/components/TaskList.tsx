@@ -10,11 +10,15 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
 import { TaskComments } from './TaskComments';
+import { TaskActivity } from './TaskActivity';
 
 interface TaskListProps {
   tasks: Task[];
   selectedProjectId: string | null;
   selectedTaskId: string | null;
+  activityRefreshKey?: number;
+  onActivityCreated: () => void;
+
   onAddTask: (task: {
     name: string;
     projectId: string;
@@ -23,6 +27,7 @@ interface TaskListProps {
     description: string | null;
     dueDate: string | null;
   }) => void;
+
   onSelectTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
   onToggleFavorite: (taskId: string, isFavorite: boolean) => void;
@@ -44,6 +49,8 @@ export function TaskList({
   onDeleteTask,
   onUpdateTask,
   onToggleFavorite,
+  activityRefreshKey = 0,
+  onActivityCreated,
 }: TaskListProps) {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('todo');
@@ -300,11 +307,18 @@ export function TaskList({
                     <PdfUpload
                       taskId={task.id}
                       onUploadSuccess={() => setFilesRefreshKey((prev) => prev + 1)}
+                      onActivityCreated={onActivityCreated}
                     />
 
-                    <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
+                    <TaskFilesList
+                      taskId={task.id}
+                      refreshKey={filesRefreshKey}
+                      onActivityCreated={onActivityCreated}
+                    />
 
-                    <TaskComments taskId={task.id} />
+                    <TaskComments taskId={task.id} onActivityCreated={onActivityCreated} />
+
+                    <TaskActivity taskId={task.id} refreshKey={activityRefreshKey} />
                   </div>
                 )}
               </li>

@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { Dashboard } from './components/Dashboard';
 import { ThemeToggle } from './components/ThemeToggle';
 import { applyTheme, getInitialTheme, type Theme } from './lib/theme';
+import { createTaskActivity } from './lib/taskActivity';
 
 import { Input } from '@/components/ui/input';
 import {
@@ -44,6 +45,7 @@ function App() {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const [activeView, setActiveView] = useState<'dashboard' | 'calendar'>('dashboard');
+  const [activityRefreshKey, setActivityRefreshKey] = useState(0);
 
   const navigate = useNavigate();
 
@@ -230,7 +232,18 @@ function App() {
 
     if (!error && data) {
       setTasks((prev) => [...prev, data]);
+      await createTaskActivity({
+        taskId: data.id,
+        userId: user.id,
+        activityType: 'task_created',
+        description: 'Task created',
+        metadata: {
+          status: data.status,
+          priority: data.priority,
+        },
+      });
       toast.success('Task added');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to add task');
     }
@@ -265,7 +278,15 @@ function App() {
     if (!error && data) {
       setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
 
+      await createTaskActivity({
+        taskId,
+        userId: user.id,
+        activityType: isFavorite ? 'favorite_added' : 'favorite_removed',
+        description: isFavorite ? 'Task added to favorites' : 'Task removed from favorites',
+      });
+
       toast.success(isFavorite ? 'Task added to favorites' : 'Task removed from favorites');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to update favorite task');
     }
@@ -301,7 +322,19 @@ function App() {
 
       if (!error && data) {
         setSessions((prev) => [data, ...prev]);
+
+        await createTaskActivity({
+          taskId: selectedTaskId,
+          userId: user.id,
+          activityType: 'time_session_added',
+          description: 'Time tracking session saved',
+          metadata: {
+            duration,
+          },
+        });
+
         toast.success('Session saved');
+        setActivityRefreshKey((current) => current + 1);
       } else {
         toast.error('Failed to save session');
       }
@@ -429,7 +462,35 @@ function App() {
 
     if (!error && data) {
       setTasks((prev) => prev.map((task) => (task.id === taskId ? data : task)));
+
+      if (user && updates.status && updates.status !== currentTask?.status) {
+        await createTaskActivity({
+          taskId,
+          userId: user.id,
+          activityType: 'status_changed',
+          description: `Status changed from ${currentTask?.status ?? 'unknown'} to ${updates.status}`,
+          metadata: {
+            old_value: currentTask?.status ?? null,
+            new_value: updates.status,
+          },
+        });
+      }
+
+      if (user && updates.priority && updates.priority !== currentTask?.priority) {
+        await createTaskActivity({
+          taskId,
+          userId: user.id,
+          activityType: 'priority_changed',
+          description: `Priority changed from ${currentTask?.priority ?? 'unknown'} to ${updates.priority}`,
+          metadata: {
+            old_value: currentTask?.priority ?? null,
+            new_value: updates.priority,
+          },
+        });
+      }
+
       toast.success('Task updated');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to update task');
     }
@@ -456,6 +517,9 @@ function App() {
   const selectedTask = selectedTaskId ? tasks.find((t) => t.id === selectedTaskId) : null;
   const taskProjectId = selectedTask?.project_id;
   const selectedProject = taskProjectId ? projects.find((p) => p.id === taskProjectId) : null;
+  const handleActivityCreated = () => {
+    setActivityRefreshKey((current) => current + 1);
+  };
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-900 dark:from-gray-950 dark:via-slate-950 dark:to-indigo-950 dark:text-gray-100">
@@ -549,6 +613,8 @@ function App() {
             selectedTaskId={selectedTaskId}
             onUpdateTask={handleUpdateTask}
             onToggleFavorite={handleToggleTaskFavorite}
+            activityRefreshKey={activityRefreshKey}
+            onActivityCreated={handleActivityCreated}
           />
         </div>
 

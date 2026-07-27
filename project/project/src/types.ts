@@ -21,6 +21,28 @@ export interface TaskComment {
   author_avatar_url: string | null;
 }
 
+export type TaskActivityType =
+  | 'task_created'
+  | 'status_changed'
+  | 'priority_changed'
+  | 'favorite_added'
+  | 'favorite_removed'
+  | 'comment_added'
+  | 'comment_deleted'
+  | 'file_uploaded'
+  | 'file_deleted'
+  | 'time_session_added';
+
+export interface TaskActivity {
+  id: string;
+  task_id: string;
+  user_id: string;
+  activity_type: TaskActivityType;
+  description: string;
+  metadata: Record<string, string | number | boolean | null>;
+  created_at: string;
+}
+
 export interface Project {
   id: string;
   name: string;
