@@ -10,11 +10,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Star } from 'lucide-react';
 import { TaskComments } from './TaskComments';
+import { TaskActivity } from './TaskActivity';
 
 interface TaskListProps {
   tasks: Task[];
   selectedProjectId: string | null;
   selectedTaskId: string | null;
+  activityRefreshKey?: number;
   onAddTask: (task: {
     name: string;
     projectId: string;
@@ -44,6 +46,7 @@ export function TaskList({
   onDeleteTask,
   onUpdateTask,
   onToggleFavorite,
+  activityRefreshKey = 0,
 }: TaskListProps) {
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('todo');
@@ -305,6 +308,8 @@ export function TaskList({
                     <TaskFilesList taskId={task.id} refreshKey={filesRefreshKey} />
 
                     <TaskComments taskId={task.id} />
+
+                    <TaskActivity taskId={task.id} refreshKey={activityRefreshKey} />
                   </div>
                 )}
               </li>

@@ -45,6 +45,7 @@ function App() {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
   const [activeView, setActiveView] = useState<'dashboard' | 'calendar'>('dashboard');
+  const [activityRefreshKey, setActivityRefreshKey] = useState(0);
 
   const navigate = useNavigate();
 
@@ -242,6 +243,7 @@ function App() {
         },
       });
       toast.success('Task added');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to add task');
     }
@@ -284,6 +286,7 @@ function App() {
       });
 
       toast.success(isFavorite ? 'Task added to favorites' : 'Task removed from favorites');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to update favorite task');
     }
@@ -331,6 +334,7 @@ function App() {
         });
 
         toast.success('Session saved');
+        setActivityRefreshKey((current) => current + 1);
       } else {
         toast.error('Failed to save session');
       }
@@ -486,6 +490,7 @@ function App() {
       }
 
       toast.success('Task updated');
+      setActivityRefreshKey((current) => current + 1);
     } else {
       toast.error('Failed to update task');
     }
@@ -605,6 +610,7 @@ function App() {
             selectedTaskId={selectedTaskId}
             onUpdateTask={handleUpdateTask}
             onToggleFavorite={handleToggleTaskFavorite}
+            activityRefreshKey={activityRefreshKey}
           />
         </div>
 
