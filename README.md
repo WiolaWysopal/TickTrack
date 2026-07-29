@@ -6,7 +6,7 @@
 
 TickTrack was created as a lightweight productivity application focused on simplicity and performance. The project combines task management, time tracking, document storage, customizable user profiles and a modern light/dark interface inside a Progressive Web App powered by Supabase.
 
-The application demonstrates practical usage of React, TypeScript, Supabase Authentication, PostgreSQL, Storage, Row Level Security (RLS) and Progressive Web App technologies.
+The application demonstrates practical usage of React, TypeScript, Supabase Authentication, PostgreSQL, Storage, Row Level Security (RLS), Progressive Web App technologies and Docker containerization.
 
 ## 🚀 Features
 
@@ -103,6 +103,9 @@ The application demonstrates practical usage of React, TypeScript, Supabase Auth
 * `PWA` – installable app experience with offline support
 * `Supabase` – Authentication, PostgreSQL and Storage
 * `Node.js` / `npm` – dependency and script management
+* `Docker` – containerized production build
+* `Docker Compose` – simplified local container management
+* `Nginx` – production server for the built React application
 * `Cloudflare` – domain management with DNS, SSL and performance optimizations
 * `Recharts` – chart library used for dashboard productivity visualizations
 * `PDF.js` – in-app PDF preview rendering
@@ -221,6 +224,10 @@ The frontend communicates directly with Supabase using the official JavaScript S
 ## 📂 Project Structure
 
 ```
+Dockerfile
+docker-compose.yml
+nginx.conf
+.dockerignore
 src/
 ├── components/
 │   ├── ui/
@@ -444,7 +451,9 @@ TickTrack protects user data using several Supabase security features:
 
 ## 🌐 Deployment
 
-TickTrack is deployed using `Netlify` .
+The production version of TickTrack is deployed using `Netlify` .
+
+The repository also contains a Docker configuration that allows the production build to be run locally using Docker Compose and Nginx.
 
 `Cloudflare` is used for:
 
@@ -498,6 +507,7 @@ These improvements increase maintainability, readability and long-term scalabili
 Before running the project locally, make sure you have:
 
 * `Node.js` 20+
+* `Docker Desktop` – optional, required only for containerized local deployment
 * `npm` 10+
 * a Supabase project
 * Supabase Storage bucket named `task-files`
@@ -536,6 +546,60 @@ or manually create:
 ```text
 .env.public
 ```
+
+## 🐳 Docker
+
+TickTrack can be built and run locally inside a Docker container.
+
+The application uses a multi-stage Docker build:
+
+1. Node.js installs dependencies and builds the React/Vite application.
+2. The generated production files are copied to a lightweight Nginx image.
+3. Nginx serves the application on port `80` inside the container.
+
+### Requirements
+
+Make sure Docker Desktop is installed and running.
+
+### Run with Docker Compose
+
+Create a `.env` file containing the required Supabase variables:
+
+```env
+VITE_SUPABASE_URL=https://YOUR-PROJECT.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_KEY
+```
+
+Build and start the application:
+
+```bash
+docker compose up --build
+```
+
+The application will be available at:
+
+```text
+http://localhost:8080
+```
+
+Stop the running containers using:
+
+```bash
+docker compose down
+```
+
+### Docker configuration
+
+The Docker setup includes:
+
+* multi-stage production build
+* Node.js build environment
+* lightweight Nginx production server
+* Docker Compose configuration
+* React Router fallback handled by Nginx
+* Supabase environment variables passed during the build process
+
+Docker is provided as an alternative local deployment method. The production version of TickTrack remains hosted on Netlify.
 
 ## 🧪 Available Scripts
 
@@ -592,9 +656,9 @@ Fields include:
 * task name
 * associated project (`project_id`)
 * owner (`user_id`)
-* status (`todo`,          `in_progress`,          `done`)
+* status (`todo`,           `in_progress`,           `done`)
 * favorite flag (`is_favorite`)
-* priority (`low`,          `medium`,          `high`)
+* priority (`low`,           `medium`,           `high`)
 * optional description
 * optional due date
 * completion timestamp (`completed_at`)
