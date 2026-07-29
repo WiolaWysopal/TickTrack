@@ -3,23 +3,18 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-# Najpierw kopiujemy pliki zależności,
-# aby Docker mógł wykorzystać cache
 COPY package.json package-lock.json ./
 
 RUN npm ci
 
-# Następnie kopiujemy kod aplikacji
 COPY . .
 
-# Zmienne Vite potrzebne podczas budowania
 ARG VITE_SUPABASE_URL
-ARG VITE_SUPABASE_ANON_KEY
+ARG VITE_SUPABASE_PUBLIC_KEY
 
 ENV VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
-ENV VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+ENV VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_PUBLIC_KEY}
 
-# Tworzy produkcyjny folder dist
 RUN npm run build
 
 # Etap 2: serwowanie gotowej aplikacji przez Nginx
